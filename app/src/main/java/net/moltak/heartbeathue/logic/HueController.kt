@@ -1,5 +1,6 @@
 package net.moltak.heartbeathue.logic
 
+import android.util.Log
 import com.philips.lighting.hue.sdk.PHAccessPoint
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager
 import com.philips.lighting.hue.sdk.PHHueSDK
@@ -15,6 +16,9 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     private val sharedPreferences: HueSharedPreferences
     private val listener: PHSDKListener
 
+    private val TAG = "HUE_TAG"
+    private val USERNAME = "HeartbeatHue"
+
     init {
         this.sharedPreferences = sharedPreferences
         this.listener = phdSdkPHSDKListener
@@ -24,7 +28,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         phHueSDK.deviceName = android.os.Build.MODEL
     }
 
-    fun connect(): Boolean {
+    fun connectToLastAccessPoint(): Boolean {
         phHueSDK.notificationManager.registerSDKListener(simpleListener)
 
         if (sharedPreferences.lastConnectedIPAddress.length != 0
@@ -53,28 +57,65 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         sm.search(true, true);
     }
 
+    private fun connectToAccessPoints(accessPoint: PHAccessPoint) {
+        val connectedBridge: PHBridge = phHueSDK.selectedBridge
+
+        val connectedIP = connectedBridge.resourceCache.bridgeConfiguration.ipAddress;
+        if (connectedIP != null) {   // We are already connected here:-
+            phHueSDK.disableHeartbeat(connectedBridge);
+            phHueSDK.disconnect(connectedBridge);
+        }
+
+        phHueSDK.connect(accessPoint);
+    }
+
     private val simpleListener = object : HueSimpleListener() {
         override fun onAccessPointsFound(list: List<PHAccessPoint>) {
+            if (list.size > 0) connectToAccessPoints(list[0])
             listener.onAccessPointsFound(list)
         }
 
         override fun onCacheUpdated(list: List<Int>, phBridge: PHBridge) {
+            Log.w(TAG, "On CacheUpdated");
+
             listener.onCacheUpdated(list, phBridge)
         }
 
         override fun onBridgeConnected(phBridge: PHBridge, s: String) {
+            phHueSDK.selectedBridge = phBridge;
+            phHueSDK.enableHeartbeat(phBridge, PHHueSDK.HB_INTERVAL.toLong());
+            phHueSDK.lastHeartbeat.put(phBridge.resourceCache.bridgeConfiguration.ipAddress, System.currentTimeMillis());
+            sharedPreferences.setLastConnectedIPAddress(phBridge.resourceCache.bridgeConfiguration.ipAddress);
+            sharedPreferences.setUsername(USERNAME);
+
             listener.onBridgeConnected(phBridge, s)
         }
 
         override fun onAuthenticationRequired(phAccessPoint: PHAccessPoint) {
+            phHueSDK.startPushlinkAuthentication(phAccessPoint);
+
             listener.onAuthenticationRequired(phAccessPoint)
         }
 
         override fun onConnectionResumed(phBridge: PHBridge) {
+            Log.v(TAG, "onConnectionResumed ${phBridge.resourceCache.bridgeConfiguration.ipAddress}");
+
+            phHueSDK.lastHeartbeat.put(phBridge.resourceCache.bridgeConfiguration.ipAddress, System.currentTimeMillis());
+            for (i in 0..phHueSDK.disconnectedAccessPoint.size) {
+                if (phHueSDK.disconnectedAccessPoint[i].ipAddress.equals(phBridge.resourceCache.bridgeConfiguration.ipAddress)) {
+                    phHueSDK.disconnectedAccessPoint.removeAt(i);
+                }
+            }
+
             listener.onConnectionResumed(phBridge)
         }
 
         override fun onConnectionLost(phAccessPoint: PHAccessPoint) {
+            Log.v(TAG, "onConnectionLost: ${phAccessPoint.ipAddress}");
+            if (!phHueSDK.disconnectedAccessPoint.contains(phAccessPoint)) {
+                phHueSDK.disconnectedAccessPoint.add(phAccessPoint);
+            }
+
             listener.onConnectionLost(phAccessPoint)
         }
 
@@ -83,6 +124,10 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         }
 
         override fun onParsingErrors(list: List<PHHueParsingError>) {
+            for (parsingError in list) {
+                Log.e(TAG, "ParsingError: ${parsingError.message}");
+            }
+
             listener.onParsingErrors(list)
         }
     }

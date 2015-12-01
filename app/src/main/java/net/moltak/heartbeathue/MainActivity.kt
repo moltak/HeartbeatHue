@@ -15,13 +15,14 @@ public class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         hueController = HueController(HueSharedPreferences.getInstance(this), listener)
-        if (hueController?.connect() == false) {
+        if (hueController?.connectToLastAccessPoint() == false) {
             hueController?.searchBridge()
         }
     }
 
     override fun onDestroy() {
         hueController?.disconnect()
+        super.onDestroy()
     }
 
     private val listener = object : HueSimpleListener() {
