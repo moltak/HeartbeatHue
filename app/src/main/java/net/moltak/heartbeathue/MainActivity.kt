@@ -2,7 +2,7 @@ package net.moltak.heartbeathue
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
+import android.widget.TextView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import net.moltak.heartbeathue.logic.HueController
@@ -13,6 +13,7 @@ import net.moltak.heartbeathue.logic.LevelCreator
 public class MainActivity : AppCompatActivity() {
 
     private var hueController: HueController? = null
+    private var stage = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +37,9 @@ public class MainActivity : AppCompatActivity() {
 
     @OnClick(R.id.buttonChangeColor)
     public fun onChangeColorButtonClicked() {
-        hueController?.changeTheColor()
-        Toast.makeText(this, "aaa", Toast.LENGTH_LONG).show()
+        hueController?.changeTheColor(stage++)
+
+        val textView: TextView = findViewById(R.id.textView) as TextView
+        textView.text = "$stage times clicked!"
     }
 }

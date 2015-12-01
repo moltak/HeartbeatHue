@@ -56,8 +56,8 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         phHueSDK.disableAllHeartbeat();
     }
 
-    fun changeTheColor() {
-        val hues = levelCreator.getHues()[0]
+    fun changeTheColor(stage: Int) {
+        val hues = levelCreator.getHues()[stage]
         val bridge = phHueSDK.selectedBridge
         val size = bridge?.resourceCache?.allLights?.size ?: return
 

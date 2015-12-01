@@ -27,6 +27,15 @@ public class MainActivityTest {
     @Test
     public void buttonClickTest() {
         onView(withId(R.id.buttonChangeColor)).perform(click());
-        onView(withId(R.id.textView)).check(matches(withText("Waiting for the Hue")));
+        onView(withId(R.id.textView)).check(matches(withText("1 times clicked!")));
+    }
+
+    @Test
+    public void button20TimesClickTest() throws InterruptedException {
+        for (int i = 0; i < 20; i ++) {
+            onView(withId(R.id.buttonChangeColor)).perform(click());
+            Thread.sleep(500);
+            onView(withId(R.id.textView)).check(matches(withText(String.format("%d times clicked!", i + 1))));
+        }
     }
 }
