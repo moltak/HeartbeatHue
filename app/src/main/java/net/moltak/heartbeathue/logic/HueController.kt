@@ -7,6 +7,8 @@ import com.philips.lighting.hue.sdk.PHHueSDK
 import com.philips.lighting.hue.sdk.PHSDKListener
 import com.philips.lighting.model.PHBridge
 import com.philips.lighting.model.PHHueParsingError
+import com.philips.lighting.model.PHLightState
+import java.util.*
 
 /**
  * Created by engeng on 12/1/15.
@@ -50,6 +52,19 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     fun disconnect() {
         phHueSDK.notificationManager.unregisterSDKListener(listener);
         phHueSDK.disableAllHeartbeat();
+    }
+
+    fun changeTheColor(hues: Hues) {
+        val bridge = phHueSDK.selectedBridge
+
+        for (i in 0..bridge.resourceCache.allLights.size) {
+            if (i == 3) break
+
+            val lightState = PHLightState()
+            lightState.hue = hues.hues[i].toInt()
+            bridge.updateLightState(bridge.resourceCache.allLights[i], lightState);
+            // If no bridge response is required then use this simpler form.
+        }
     }
 
     fun searchBridge() {
