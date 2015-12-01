@@ -2,7 +2,8 @@ package net.moltak.heartbeathue
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
+import butterknife.ButterKnife
+import butterknife.OnClick
 import net.moltak.heartbeathue.logic.HueController
 import net.moltak.heartbeathue.logic.HueSharedPreferences
 import net.moltak.heartbeathue.logic.HueSimpleListener
@@ -17,6 +18,7 @@ public class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        ButterKnife.bind(this)
 
         hueController = HueController(HueSharedPreferences.getInstance(this), listener)
         if (hueController?.connectToLastAccessPoint() == false) {
@@ -33,7 +35,8 @@ public class MainActivity : AppCompatActivity() {
 
     }
 
-    public fun onChangeColorButtonClicked(view: View) {
+    @OnClick(R.id.buttonChangeColor)
+    public fun onChangeColorButtonClicked() {
         val r = Random(Date().time)
         hueController?.changeTheColor(levelCreator.getHues()[r.nextInt() % levelCreator.getHues().size])
     }
