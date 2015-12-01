@@ -1,35 +1,30 @@
 package net.moltak.heartbeathue
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import com.philips.lighting.hue.sdk.PHHueSDK
-import com.philips.lighting.model.PHBridge
+import android.support.v7.app.AppCompatActivity
+import net.moltak.heartbeathue.logic.HueController
 import net.moltak.heartbeathue.logic.HueSharedPreferences
+import net.moltak.heartbeathue.logic.HueSimpleListener
 
 public class MainActivity : AppCompatActivity() {
 
-    private var phHueSdk: PHHueSDK? = null
-    private var hueSharedPreference : HueSharedPreferences? = null
+    private var hueController: HueController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        phHueSdk = PHHueSDK.create();
-        hueSharedPreference = HueSharedPreferences.getInstance(this)
+        hueController = HueController(HueSharedPreferences.getInstance(this), listener)
+        if (hueController?.connect() == false) {
+            hueController?.searchBridge()
+        }
     }
 
     override fun onDestroy() {
-        var bridge : PHBridge? = phHueSdk?.selectedBridge
+        hueController?.disconnect()
+    }
 
-        if (bridge != null) {
-            if ((phHueSdk as PHHueSDK).isHeartbeatEnabled(bridge)) {
-                (phHueSdk as PHHueSDK).disableHeartbeat(bridge)
-            }
+    private val listener = object : HueSimpleListener() {
 
-            (phHueSdk as PHHueSDK).disconnect(bridge)
-        }
-
-        super.onDestroy()
     }
 }

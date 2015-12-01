@@ -4,6 +4,8 @@ import com.philips.lighting.hue.sdk.PHAccessPoint
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager
 import com.philips.lighting.hue.sdk.PHHueSDK
 import com.philips.lighting.hue.sdk.PHSDKListener
+import com.philips.lighting.model.PHBridge
+import com.philips.lighting.model.PHHueParsingError
 
 /**
  * Created by engeng on 12/1/15.
@@ -20,10 +22,11 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         phHueSDK = PHHueSDK.create()
         phHueSDK.appName = "HeartbeatHue"
         phHueSDK.deviceName = android.os.Build.MODEL
-        phHueSDK.notificationManager.registerSDKListener(phdSdkPHSDKListener)
     }
 
     fun connect(): Boolean {
+        phHueSDK.notificationManager.registerSDKListener(simpleListener)
+
         if (sharedPreferences.lastConnectedIPAddress.length != 0
                 && sharedPreferences.username.length != 0) {
 
@@ -48,5 +51,39 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     fun searchBridge() {
         val sm: PHBridgeSearchManager = phHueSDK.getSDKService(PHHueSDK.SEARCH_BRIDGE) as PHBridgeSearchManager;
         sm.search(true, true);
+    }
+
+    private val simpleListener = object : HueSimpleListener() {
+        override fun onAccessPointsFound(list: List<PHAccessPoint>) {
+            listener.onAccessPointsFound(list)
+        }
+
+        override fun onCacheUpdated(list: List<Int>, phBridge: PHBridge) {
+            listener.onCacheUpdated(list, phBridge)
+        }
+
+        override fun onBridgeConnected(phBridge: PHBridge, s: String) {
+            listener.onBridgeConnected(phBridge, s)
+        }
+
+        override fun onAuthenticationRequired(phAccessPoint: PHAccessPoint) {
+            listener.onAuthenticationRequired(phAccessPoint)
+        }
+
+        override fun onConnectionResumed(phBridge: PHBridge) {
+            listener.onConnectionResumed(phBridge)
+        }
+
+        override fun onConnectionLost(phAccessPoint: PHAccessPoint) {
+            listener.onConnectionLost(phAccessPoint)
+        }
+
+        override fun onError(i: Int, s: String) {
+            listener.onError(i, s)
+        }
+
+        override fun onParsingErrors(list: List<PHHueParsingError>) {
+            listener.onParsingErrors(list)
+        }
     }
 }
