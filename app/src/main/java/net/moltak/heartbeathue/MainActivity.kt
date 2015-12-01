@@ -9,19 +9,17 @@ import net.moltak.heartbeathue.logic.HueController
 import net.moltak.heartbeathue.logic.HueSharedPreferences
 import net.moltak.heartbeathue.logic.HueSimpleListener
 import net.moltak.heartbeathue.logic.LevelCreator
-import java.util.*
 
 public class MainActivity : AppCompatActivity() {
 
     private var hueController: HueController? = null
-    private val levelCreator = LevelCreator()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
 
-        hueController = HueController(HueSharedPreferences.getInstance(this), listener)
+        hueController = HueController(HueSharedPreferences.getInstance(this), listener, LevelCreator(10, 20))
         if (hueController?.connectToLastAccessPoint() == false) {
             hueController?.searchBridge()
         }
@@ -38,9 +36,7 @@ public class MainActivity : AppCompatActivity() {
 
     @OnClick(R.id.buttonChangeColor)
     public fun onChangeColorButtonClicked() {
-        val r = Random(Date().time)
-        hueController?.changeTheColor(levelCreator.getHues()[0])
-
+        hueController?.changeTheColor()
         Toast.makeText(this, "aaa", Toast.LENGTH_LONG).show()
     }
 }

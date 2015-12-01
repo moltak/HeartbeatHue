@@ -12,10 +12,12 @@ import com.philips.lighting.model.PHLightState
 /**
  * Created by engeng on 12/1/15.
  */
-class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener: PHSDKListener) {
+class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener: PHSDKListener,
+                    levelCreator: LevelCreator) {
     private val phHueSDK: PHHueSDK
     private val sharedPreferences: HueSharedPreferences
     private val listener: PHSDKListener
+    private val levelCreator: LevelCreator
 
     private val TAG = "HUE_TAG"
     private val USERNAME = "HeartbeatHue"
@@ -23,6 +25,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     init {
         this.sharedPreferences = sharedPreferences
         this.listener = phdSdkPHSDKListener
+        this.levelCreator = levelCreator
 
         phHueSDK = PHHueSDK.create()
         phHueSDK.appName = "HeartbeatHue"
@@ -53,12 +56,13 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         phHueSDK.disableAllHeartbeat();
     }
 
-    fun changeTheColor(hues: Hues) {
+    fun changeTheColor() {
+        val hues = levelCreator.getHues()[0]
         val bridge = phHueSDK.selectedBridge
         val size = bridge?.resourceCache?.allLights?.size ?: return
 
         for (i in 0..size) {
-            if (i == 3) break // I had have 3 hues.
+            if (i == levelCreator.getHueCount()) break
 
             val lightState = PHLightState()
             lightState.hue = hues.hues[i].toInt()

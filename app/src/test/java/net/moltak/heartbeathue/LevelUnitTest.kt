@@ -2,10 +2,7 @@ package net.moltak.heartbeathue
 
 import net.moltak.heartbeathue.logic.LevelCreator
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /**
  * Created by engeng on 11/26/15.
@@ -29,8 +26,8 @@ class LevelUnitTest {
     @Test
     @Throws(Exception::class)
     fun stagesHaveADifferentColors() {
-        var levelCreator = LevelCreator()
-        assertTrue(levelCreator.getHues().get(0).hues.get(0).R != levelCreator.getHues().get(1).hues.get(1).R)
+        var levelCreator = LevelCreator(3, 20)
+        assertTrue(levelCreator.getHues()[0].hues[0].R != levelCreator.getHues()[1].hues[1].R)
     }
 
     @Test
@@ -44,5 +41,17 @@ class LevelUnitTest {
         val hue2 = hues.hues[2]
 
         assertFalse((hue0.R == hue1.R) && (hue1.R == hue2.R) && (hue2.R == hue0.R))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun stageHas4ChannelColor() {
+        val levelCreator = LevelCreator()
+
+        val hues = levelCreator.getHues()[10]
+        assertNotEquals(0, hues.hues[0].A)
+        assertNotEquals(0, hues.hues[0].R)
+        assertNotEquals(0, hues.hues[0].G)
+        assertNotEquals(0, hues.hues[0].B)
     }
 }
