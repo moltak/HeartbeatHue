@@ -8,7 +8,6 @@ import com.philips.lighting.hue.sdk.PHSDKListener
 import com.philips.lighting.model.PHBridge
 import com.philips.lighting.model.PHHueParsingError
 import com.philips.lighting.model.PHLightState
-import java.util.*
 
 /**
  * Created by engeng on 12/1/15.
@@ -59,7 +58,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         val size = bridge?.resourceCache?.allLights?.size ?: return
 
         for (i in 0..size) {
-            if (i == 3) break
+            if (i == 3) break // I had have 3 hues.
 
             val lightState = PHLightState()
             lightState.hue = hues.hues[i].toInt()
