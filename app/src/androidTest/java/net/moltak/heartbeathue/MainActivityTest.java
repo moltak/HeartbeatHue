@@ -20,6 +20,5 @@ public class MainActivityTest {
 
     @Test
     public void startActivity() {
-
     }
 }
