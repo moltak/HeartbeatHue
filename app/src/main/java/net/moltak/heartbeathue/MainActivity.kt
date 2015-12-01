@@ -2,6 +2,7 @@ package net.moltak.heartbeathue
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import butterknife.ButterKnife
 import butterknife.OnClick
 import net.moltak.heartbeathue.logic.HueController
@@ -38,6 +39,8 @@ public class MainActivity : AppCompatActivity() {
     @OnClick(R.id.buttonChangeColor)
     public fun onChangeColorButtonClicked() {
         val r = Random(Date().time)
-        hueController?.changeTheColor(levelCreator.getHues()[r.nextInt() % levelCreator.getHues().size])
+        hueController?.changeTheColor(levelCreator.getHues()[0])
+
+        Toast.makeText(this, "aaa", Toast.LENGTH_LONG).show()
     }
 }

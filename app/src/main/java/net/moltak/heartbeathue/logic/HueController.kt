@@ -56,14 +56,14 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
     fun changeTheColor(hues: Hues) {
         val bridge = phHueSDK.selectedBridge
+        val size = bridge?.resourceCache?.allLights?.size ?: return
 
-        for (i in 0..bridge.resourceCache.allLights.size) {
+        for (i in 0..size) {
             if (i == 3) break
 
             val lightState = PHLightState()
             lightState.hue = hues.hues[i].toInt()
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState);
-            // If no bridge response is required then use this simpler form.
         }
     }
 
