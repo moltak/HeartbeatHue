@@ -38,7 +38,7 @@ class LevelUnitTest {
     fun stagHas2SameColors1DifferentColor() {
         var levelCreator = LevelCreator()
 
-        val hues = levelCreator.getHues()[0]
+        val hues = levelCreator.getHues()[10]
         val hue0 = hues.hues[0]
         val hue1 = hues.hues[1]
         val hue2 = hues.hues[2]
