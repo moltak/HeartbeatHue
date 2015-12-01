@@ -6,34 +6,35 @@ import java.util.*
  * Created by engeng on 11/26/15.
  */
 class LevelCreator {
-    private val list: MutableList<Hues> = ArrayList()
+    private val hues: MutableList<Hues> = ArrayList()
 
     constructor() {
-        // n = color - color * (1/stage^2)
-        var i = 0
         val rand = Random()
         rand.setSeed(Date().time)
 
-        while (i < 20) {
-            var hues = Array(3, { i -> HueStage(0, 0, 0)})
+        for (i in 1..20) {
+            var r = rand.nextInt(255)
+            var g = rand.nextInt(255)
+            var b = rand.nextInt(255)
 
-            val r = rand.nextInt(255)
-            val g = rand.nextInt(255)
-            val b = rand.nextInt(255)
+            var hueStages = Array(3, { i -> HueStage(r, g, b)})
+            hueStages[r % 3] = createInverseExponentialColor(hueStages[0], i)
 
-            var j = 0
-            while (j < 3) {
-                hues[j] = HueStage(r, g, b)
-                j ++
-            }
-
-            list.add(Hues(hues))
-            i ++
+            hues.add(Hues(hueStages))
         }
     }
 
+    private fun createInverseExponentialColor(hueStage: HueStage, stage: Int) : HueStage {
+        val r = hueStage.R
+        val g = hueStage.G
+        val b = hueStage.B
+
+        // n = color - color * (1/stage^2), inverse exponential,
+        val exponential = 1 / (stage * stage)
+        return HueStage(r - r * exponential, g - g * exponential, b - b * exponential)
+    }
+
     fun getHues(): List<Hues> {
-        return list
+        return hues
     }
 }
-
