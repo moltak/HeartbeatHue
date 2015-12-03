@@ -73,9 +73,9 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     }
 
     private fun connectToAccessPoints(accessPoint: PHAccessPoint) {
-        val connectedBridge: PHBridge = phHueSDK.selectedBridge
+        val connectedBridge: PHBridge? = phHueSDK.selectedBridge
 
-        val connectedIP = connectedBridge.resourceCache.bridgeConfiguration.ipAddress;
+        val connectedIP = connectedBridge?.resourceCache?.bridgeConfiguration?.ipAddress ?: null
         if (connectedIP != null) {   // We are already connected here:-
             phHueSDK.disableHeartbeat(connectedBridge);
             phHueSDK.disconnect(connectedBridge);
@@ -86,6 +86,10 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
     private val simpleListener = object : HueSimpleListener() {
         override fun onAccessPointsFound(list: List<PHAccessPoint>) {
+            for (i in list) {
+                    println("${i.ipAddress} -> ${i.bridgeId}")
+            }
+
             if (list.size > 0) connectToAccessPoints(list[0])
             listener.onAccessPointsFound(list)
         }
@@ -116,7 +120,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
             Log.v(TAG, "onConnectionResumed ${phBridge.resourceCache.bridgeConfiguration.ipAddress}");
 
             phHueSDK.lastHeartbeat.put(phBridge.resourceCache.bridgeConfiguration.ipAddress, System.currentTimeMillis());
-            for (i in 0..phHueSDK.disconnectedAccessPoint.size) {
+            for (i in 0..phHueSDK.disconnectedAccessPoint.size - 1) {
                 if (phHueSDK.disconnectedAccessPoint[i].ipAddress.equals(phBridge.resourceCache.bridgeConfiguration.ipAddress)) {
                     phHueSDK.disconnectedAccessPoint.removeAt(i);
                 }
