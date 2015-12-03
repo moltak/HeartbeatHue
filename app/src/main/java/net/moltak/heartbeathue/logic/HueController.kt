@@ -54,17 +54,25 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         phHueSDK.disableAllHeartbeat();
     }
 
-    fun changeTheColor(hues: Hues) {
+    fun changeTheColor(hues: Hues): Boolean {
         val bridge = phHueSDK.selectedBridge
-        val size = bridge?.resourceCache?.allLights?.size ?: return
+        val size = bridge?.resourceCache?.allLights?.size ?: return false
 
-        for (i in 0..size) {
+        val rand = Random();
+
+        for (i in 0..size - 1) {
             if (i == 3) break
 
             val lightState = PHLightState()
             lightState.hue = hues.hues[i].toInt()
+            lightState.hue = rand.nextInt(65536);
+
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState);
+
+            Log.d(TAG, "   $i -> ${lightState.hue},  ${lightState.validateState()}")
         }
+
+        return true
     }
 
     fun searchBridge() {
@@ -86,10 +94,6 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
     private val simpleListener = object : HueSimpleListener() {
         override fun onAccessPointsFound(list: List<PHAccessPoint>) {
-            for (i in list) {
-                    println("${i.ipAddress} -> ${i.bridgeId}")
-            }
-
             if (list.size > 0) connectToAccessPoints(list[0])
             listener.onAccessPointsFound(list)
         }

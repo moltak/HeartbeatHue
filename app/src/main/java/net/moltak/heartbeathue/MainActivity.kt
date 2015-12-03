@@ -2,7 +2,6 @@ package net.moltak.heartbeathue
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.widget.TextView
 import butterknife.ButterKnife
 import butterknife.OnClick
@@ -56,10 +55,6 @@ public class MainActivity : AppCompatActivity() {
 
         override fun onCacheUpdated(list: List<Int>, phBridge: PHBridge) {
             changeText("onCacheUpdated")
-
-            for (i in list) {
-                Log.d("MainActivity", i.toString())
-            }
         }
     }
 
@@ -69,8 +64,10 @@ public class MainActivity : AppCompatActivity() {
 
     @OnClick(R.id.buttonChangeColor)
     public fun onChangeColorButtonClicked() {
-        hueController?.changeTheColor(levelCreator.getHues()[0])
-
-        (findViewById(R.id.textView) as TextView).text = "color changed!"
+        if (hueController?.changeTheColor(levelCreator.getHues()[10]) ?: false) {
+            textView.text = "color changed!"
+        } else {
+            textView.text = "fail!"
+        }
     }
 }
