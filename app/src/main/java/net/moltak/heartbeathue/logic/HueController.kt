@@ -5,6 +5,7 @@ import com.philips.lighting.hue.sdk.PHAccessPoint
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager
 import com.philips.lighting.hue.sdk.PHHueSDK
 import com.philips.lighting.hue.sdk.PHSDKListener
+import com.philips.lighting.hue.sdk.utilities.PHUtilities
 import com.philips.lighting.model.*
 import java.util.*
 
@@ -62,12 +63,19 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
             if (i == 3) break
 
             val lightState = PHLightState()
-            lightState.hue = hues.hues[i].toInt()
-            lightState.hue = rand.nextInt(65536)
+            lightState.isOn = true
+//            val xy = PHUtilities.calculateXYFromRGB(
+//                    hues.hues[i].R,
+//                    hues.hues[i].G,
+//                    hues.hues[i].B,
+//                    bridge.resourceCache.allLights[i].modelNumber)
+//            lightState.x = xy[0]
+//            lightState.y = xy[1]
 
+            lightState.hue = rand.nextInt(65536)
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
 
-            Log.d(TAG, "   $i -> ${lightState.hue},  ${lightState.validateState()}")
+            Log.d(TAG, "   $i -> ${lightState.hue}, ${lightState.validateState()}")
         }
 
         return true
