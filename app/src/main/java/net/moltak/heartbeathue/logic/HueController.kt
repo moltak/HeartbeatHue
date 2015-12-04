@@ -31,12 +31,13 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     fun connectToLastAccessPoint(): Boolean {
         phHueSDK.notificationManager.registerSDKListener(simpleListener)
 
-        if (sharedPreferences.lastConnectedIPAddress.length != 0
-                && sharedPreferences.username.length != 0) {
+        val userName = sharedPreferences.getUserName()
+        val lastIpAddress = sharedPreferences.getLastConnectedIpAddress()
 
+        if (!userName.equals("") && !lastIpAddress.equals("")) {
             val lastAccessPoint = PHAccessPoint();
-            lastAccessPoint.ipAddress = sharedPreferences.lastConnectedIPAddress
-            lastAccessPoint.username = sharedPreferences.username
+            lastAccessPoint.username = userName
+            lastAccessPoint.ipAddress = lastIpAddress
 
             if (!phHueSDK.isAccessPointConnected(lastAccessPoint)) {
                 phHueSDK.connect(lastAccessPoint)
