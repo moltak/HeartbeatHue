@@ -5,9 +5,8 @@ import com.philips.lighting.hue.sdk.PHAccessPoint
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager
 import com.philips.lighting.hue.sdk.PHHueSDK
 import com.philips.lighting.hue.sdk.PHSDKListener
-import com.philips.lighting.model.PHBridge
-import com.philips.lighting.model.PHHueParsingError
-import com.philips.lighting.model.PHLightState
+import com.philips.lighting.model.*
+import java.util.*
 
 /**
  * Created by engeng on 12/1/15.
@@ -39,11 +38,11 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
                 && sharedPreferences.username.length != 0) {
 
             val lastAccessPoint = PHAccessPoint();
-            lastAccessPoint.ipAddress = sharedPreferences.lastConnectedIPAddress;
-            lastAccessPoint.username = sharedPreferences.username;
+            lastAccessPoint.ipAddress = sharedPreferences.lastConnectedIPAddress
+            lastAccessPoint.username = sharedPreferences.username
 
             if (!phHueSDK.isAccessPointConnected(lastAccessPoint)) {
-                phHueSDK.connect(lastAccessPoint);
+                phHueSDK.connect(lastAccessPoint)
                 return true
             }
         }
@@ -56,35 +55,49 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         phHueSDK.disableAllHeartbeat();
     }
 
-    fun changeTheColor(stage: Int) {
-        val hues = levelCreator.getHues()[stage]
+    fun changeTheColor(hues: Hues): Boolean {
         val bridge = phHueSDK.selectedBridge
-        val size = bridge?.resourceCache?.allLights?.size ?: return
+        val size = bridge?.resourceCache?.allLights?.size ?: return false
 
-        for (i in 0..size) {
-            if (i == levelCreator.getHueCount()) break
+        val rand = Random()
+
+        for (i in 0..size - 1) {
+            if (i == 3) break
 
             val lightState = PHLightState()
-            lightState.hue = hues.hues[i].toInt()
-            bridge.updateLightState(bridge.resourceCache.allLights[i], lightState);
+            lightState.isOn = true
+//            val xy = PHUtilities.calculateXYFromRGB(
+//                    hues.hues[i].R,
+//                    hues.hues[i].G,
+//                    hues.hues[i].B,
+//                    bridge.resourceCache.allLights[i].modelNumber)
+//            lightState.x = xy[0]
+//            lightState.y = xy[1]
+
+            lightState.hue = rand.nextInt(65536)
+            bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
+
+            Log.d(TAG, "   $i -> ${lightState.hue}, ${lightState.validateState()}")
         }
+
+        return true
     }
 
     fun searchBridge() {
-        val sm: PHBridgeSearchManager = phHueSDK.getSDKService(PHHueSDK.SEARCH_BRIDGE) as PHBridgeSearchManager;
-        sm.search(true, true);
+        val sm: PHBridgeSearchManager = phHueSDK.getSDKService(PHHueSDK.SEARCH_BRIDGE) as PHBridgeSearchManager
+        sm.search(true, true)
     }
 
     private fun connectToAccessPoints(accessPoint: PHAccessPoint) {
-        val connectedBridge: PHBridge = phHueSDK.selectedBridge
+        val connectedBridge: PHBridge? = phHueSDK.selectedBridge
 
-        val connectedIP = connectedBridge.resourceCache.bridgeConfiguration.ipAddress;
+        val connectedIP = connectedBridge?.resourceCache?.bridgeConfiguration?.ipAddress ?: null
         if (connectedIP != null) {   // We are already connected here:-
-            phHueSDK.disableHeartbeat(connectedBridge);
-            phHueSDK.disconnect(connectedBridge);
+            phHueSDK.disableHeartbeat(connectedBridge)
+            phHueSDK.disconnect(connectedBridge)
         }
 
-        phHueSDK.connect(accessPoint);
+        phHueSDK.connect(accessPoint)
     }
 
     private val simpleListener = object : HueSimpleListener() {
@@ -94,34 +107,34 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         }
 
         override fun onCacheUpdated(list: List<Int>, phBridge: PHBridge) {
-            Log.w(TAG, "On CacheUpdated");
+            Log.w(TAG, "On CacheUpdated")
 
             listener.onCacheUpdated(list, phBridge)
         }
 
         override fun onBridgeConnected(phBridge: PHBridge, s: String) {
-            phHueSDK.selectedBridge = phBridge;
-            phHueSDK.enableHeartbeat(phBridge, PHHueSDK.HB_INTERVAL.toLong());
-            phHueSDK.lastHeartbeat.put(phBridge.resourceCache.bridgeConfiguration.ipAddress, System.currentTimeMillis());
-            sharedPreferences.setLastConnectedIPAddress(phBridge.resourceCache.bridgeConfiguration.ipAddress);
-            sharedPreferences.setUsername(USERNAME);
+            phHueSDK.selectedBridge = phBridge
+            phHueSDK.enableHeartbeat(phBridge, PHHueSDK.HB_INTERVAL.toLong())
+            phHueSDK.lastHeartbeat.put(phBridge.resourceCache.bridgeConfiguration.ipAddress, System.currentTimeMillis())
+            sharedPreferences.setLastConnectedIPAddress(phBridge.resourceCache.bridgeConfiguration.ipAddress)
+            sharedPreferences.setUsername(USERNAME)
 
             listener.onBridgeConnected(phBridge, s)
         }
 
         override fun onAuthenticationRequired(phAccessPoint: PHAccessPoint) {
-            phHueSDK.startPushlinkAuthentication(phAccessPoint);
+            phHueSDK.startPushlinkAuthentication(phAccessPoint)
 
             listener.onAuthenticationRequired(phAccessPoint)
         }
 
         override fun onConnectionResumed(phBridge: PHBridge) {
-            Log.v(TAG, "onConnectionResumed ${phBridge.resourceCache.bridgeConfiguration.ipAddress}");
+            Log.v(TAG, "onConnectionResumed ${phBridge.resourceCache.bridgeConfiguration.ipAddress}")
 
-            phHueSDK.lastHeartbeat.put(phBridge.resourceCache.bridgeConfiguration.ipAddress, System.currentTimeMillis());
-            for (i in 0..phHueSDK.disconnectedAccessPoint.size) {
+            phHueSDK.lastHeartbeat.put(phBridge.resourceCache.bridgeConfiguration.ipAddress, System.currentTimeMillis())
+            for (i in 0..phHueSDK.disconnectedAccessPoint.size - 1) {
                 if (phHueSDK.disconnectedAccessPoint[i].ipAddress.equals(phBridge.resourceCache.bridgeConfiguration.ipAddress)) {
-                    phHueSDK.disconnectedAccessPoint.removeAt(i);
+                    phHueSDK.disconnectedAccessPoint.removeAt(i)
                 }
             }
 
@@ -129,9 +142,9 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         }
 
         override fun onConnectionLost(phAccessPoint: PHAccessPoint) {
-            Log.v(TAG, "onConnectionLost: ${phAccessPoint.ipAddress}");
+            Log.v(TAG, "onConnectionLost: ${phAccessPoint.ipAddress}")
             if (!phHueSDK.disconnectedAccessPoint.contains(phAccessPoint)) {
-                phHueSDK.disconnectedAccessPoint.add(phAccessPoint);
+                phHueSDK.disconnectedAccessPoint.add(phAccessPoint)
             }
 
             listener.onConnectionLost(phAccessPoint)
@@ -143,10 +156,33 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
         override fun onParsingErrors(list: List<PHHueParsingError>) {
             for (parsingError in list) {
-                Log.e(TAG, "ParsingError: ${parsingError.message}");
+                Log.e(TAG, "ParsingError: ${parsingError.message}")
             }
 
             listener.onParsingErrors(list)
+        }
+    }
+
+    private val simpleLightListener = object : HueLightSimpleListener() {
+        override fun onError(p0: Int, p1: String?) {
+            Log.e(TAG, "LightListener -> $p1")
+        }
+
+        override fun onStateUpdate(p0: MutableMap<String, String>?, p1: MutableList<PHHueError>?) {
+            Log.e(TAG, "LightListener -> onStateUpdate")
+        }
+
+        override fun onSuccess() {
+            Log.i(TAG, "LightListener -> onSuccess")
+        }
+
+        override fun onReceivingLights(p0: MutableList<PHBridgeResource>?) {
+        }
+
+        override fun onReceivingLightDetails(p0: PHLight?) {
+        }
+
+        override fun onSearchComplete() {
         }
     }
 }

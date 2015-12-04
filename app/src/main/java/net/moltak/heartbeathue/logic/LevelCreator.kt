@@ -40,11 +40,11 @@ class LevelCreator(hueCount: Int = 3, stageCount: Int = 20) {
 
         // n = color - color * (1/stage^2), inverse exponential,
         var exponential : Double = 1.0 / (stage * stage)
-        if (exponential == 1.0) {
+        if (exponential == 1.0) { // 처음 값이 무조건 1이 나오는데 이때 편차가 너무 크므로 조금 줄임.
             exponential = 0.8
         }
 
-        println("Stage $stage   -->  $exponential")
+        //println("Stage $stage   -->  $exponential")
         return HueStage(
                 (a - a * exponential).toInt(),
                 (r - r * exponential).toInt(),
