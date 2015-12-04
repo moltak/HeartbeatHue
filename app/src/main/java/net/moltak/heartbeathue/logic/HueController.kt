@@ -1,10 +1,7 @@
 package net.moltak.heartbeathue.logic
 
 import android.util.Log
-import com.philips.lighting.hue.sdk.PHAccessPoint
-import com.philips.lighting.hue.sdk.PHBridgeSearchManager
-import com.philips.lighting.hue.sdk.PHHueSDK
-import com.philips.lighting.hue.sdk.PHSDKListener
+import com.philips.lighting.hue.sdk.*
 import com.philips.lighting.model.*
 import java.util.*
 
@@ -150,8 +147,9 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
             listener.onConnectionLost(phAccessPoint)
         }
 
-        override fun onError(i: Int, s: String) {
-            listener.onError(i, s)
+        override fun onError(code: Int, msg: String) {
+            Log.e(TAG, "on Error Called : $code : $msg");
+            listener.onError(code, msg)
         }
 
         override fun onParsingErrors(list: List<PHHueParsingError>) {

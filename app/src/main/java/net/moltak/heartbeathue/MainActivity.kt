@@ -6,7 +6,9 @@ import android.widget.TextView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.philips.lighting.hue.sdk.PHAccessPoint
+import com.philips.lighting.hue.sdk.PHMessageType
 import com.philips.lighting.model.PHBridge
+import com.philips.lighting.model.PHHueError
 import net.moltak.heartbeathue.library.bindView
 import net.moltak.heartbeathue.logic.HueController
 import net.moltak.heartbeathue.logic.HueSharedPreferences
@@ -55,6 +57,17 @@ public class MainActivity : AppCompatActivity() {
 
         override fun onCacheUpdated(list: List<Int>, phBridge: PHBridge) {
             changeText("onCacheUpdated")
+        }
+
+        override fun onError(code: Int, msg: String) {
+            when (code) {
+                PHHueError.NO_CONNECTION -> changeText("On No Connection")
+                PHHueError.AUTHENTICATION_FAILED,
+                PHMessageType.PUSHLINK_AUTHENTICATION_FAILED -> changeText("Authentication Failed")
+                PHHueError.BRIDGE_NOT_RESPONDING -> changeText("Bridge Not Responding...")
+                PHMessageType.BRIDGE_NOT_FOUND -> changeText("Bridge Not Found")
+                else -> changeText("on Error Called : $code : $msg")
+            }
         }
     }
 
