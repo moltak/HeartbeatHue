@@ -18,6 +18,7 @@ import net.moltak.heartbeathue.logic.LevelCreator
 public class MainActivity : AppCompatActivity() {
 
     private var hueController: HueController? = null
+    private var hueCount = 0
 
     private val levelCreator = LevelCreator()
     private val textView: TextView by bindView(R.id.textView)
@@ -27,7 +28,7 @@ public class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
 
-        hueController = HueController(HueSharedPreferences.getInstance(this), listener, LevelCreator(10, 20))
+        hueController = HueController(HueSharedPreferences.getInstance(this), listener, LevelCreator(3, 20))
         if (hueController?.connectToLastAccessPoint() == false) {
             hueController?.searchBridge()
         }
@@ -56,7 +57,7 @@ public class MainActivity : AppCompatActivity() {
         }
 
         override fun onCacheUpdated(list: List<Int>, phBridge: PHBridge) {
-            changeText("onCacheUpdated")
+//            changeText("onCacheUpdated")
         }
 
         override fun onError(code: Int, msg: String) {
@@ -77,10 +78,13 @@ public class MainActivity : AppCompatActivity() {
 
     @OnClick(R.id.buttonChangeColor)
     public fun onChangeColorButtonClicked() {
-        if (hueController?.changeTheColor(levelCreator.getHues()[10]) ?: false) {
-            textView.text = "color changed!"
+        if (hueController?.changeTheColor(levelCreator.hues[hueCount]) ?: false) {
+            textView.text = "Stage: -> ${hueCount + 1}, color changed!"
         } else {
             textView.text = "fail!"
         }
+
+        if (hueCount == levelCreator.stageCount - 1) hueCount = 0
+        else hueCount ++
     }
 }

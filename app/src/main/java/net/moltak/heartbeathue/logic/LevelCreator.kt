@@ -6,9 +6,9 @@ import java.util.*
  * Created by engeng on 11/26/15.
  */
 class LevelCreator(hueCount: Int = 3, stageCount: Int = 20) {
-    private val hues: MutableList<Hues> = ArrayList()
-    private val hueCount: Int
-    private val stageCount: Int
+    val hues: MutableList<Hues> = ArrayList()
+    val hueCount: Int
+    val stageCount: Int
 
     init {
         this.hueCount = hueCount
@@ -18,10 +18,10 @@ class LevelCreator(hueCount: Int = 3, stageCount: Int = 20) {
         rand.setSeed(Date().time)
 
         for (i in 1..stageCount) {
-            val a = rand.nextInt(255)
-            val r = rand.nextInt(255)
-            val g = rand.nextInt(255)
-            val b = rand.nextInt(255)
+            val a = rand.nextInt(63)
+            val r = rand.nextInt(63)
+            val g = rand.nextInt(63)
+            val b = rand.nextInt(63)
 
             var hueStages = Array(hueCount, { i -> HueStage(a, r, g, b)})
             hueStages[r % hueCount] = createInverseExponentialColor(hueStages[0], i)
@@ -50,13 +50,5 @@ class LevelCreator(hueCount: Int = 3, stageCount: Int = 20) {
                 (r - r * exponential).toInt(),
                 (g - g * exponential).toInt(),
                 (b - b * exponential).toInt())
-    }
-
-    fun getHues(): List<Hues> {
-        return hues
-    }
-
-    fun getHueCount(): Int {
-        return hueCount
     }
 }

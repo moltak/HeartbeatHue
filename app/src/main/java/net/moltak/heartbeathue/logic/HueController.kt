@@ -2,6 +2,7 @@ package net.moltak.heartbeathue.logic
 
 import android.util.Log
 import com.philips.lighting.hue.sdk.*
+import com.philips.lighting.hue.sdk.utilities.PHUtilities
 import com.philips.lighting.model.*
 import java.util.*
 
@@ -64,18 +65,18 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
             val lightState = PHLightState()
             lightState.isOn = true
-//            val xy = PHUtilities.calculateXYFromRGB(
-//                    hues.hues[i].R,
-//                    hues.hues[i].G,
-//                    hues.hues[i].B,
-//                    bridge.resourceCache.allLights[i].modelNumber)
-//            lightState.x = xy[0]
-//            lightState.y = xy[1]
+            val xy = PHUtilities.calculateXYFromRGB(
+                    hues.hues[i].R,
+                    hues.hues[i].G,
+                    hues.hues[i].B,
+                    bridge.resourceCache.allLights[i].modelNumber)
+            lightState.x = xy[0]
+            lightState.y = xy[1]
 
-            lightState.hue = rand.nextInt(65536)
+//            lightState.hue = rand.nextInt(65536)
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
 
-            Log.d(TAG, "   $i -> ${lightState.hue}, ${lightState.validateState()}")
+            Log.d(TAG, "   $i -> ${lightState.hue}, x = ${xy[0]}, y = ${xy[1]}, ${lightState.validateState()}")
         }
 
         return true
@@ -163,8 +164,8 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     }
 
     private val simpleLightListener = object : HueLightSimpleListener() {
-        override fun onError(p0: Int, p1: String?) {
-            Log.e(TAG, "LightListener -> $p1")
+        override fun onError(code: Int, msg: String?) {
+            Log.e(TAG, "LightListener -> $msg")
         }
 
         override fun onStateUpdate(p0: MutableMap<String, String>?, p1: MutableList<PHHueError>?) {
