@@ -72,7 +72,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
             lightState.isOn = true
 
 //            lightState.hue = rand.nextInt(65536)
-            lightState.hue = hues.hues[i].toHue()
+//            lightState.hue = hues.hues[i].toHue()
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
 
             Log.d(TAG, "   $i -> ${lightState.hue}, x = ${xy[0]}, y = ${xy[1]}, ${lightState.validateState()}")
