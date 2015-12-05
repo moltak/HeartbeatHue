@@ -45,7 +45,7 @@ public class MainActivity : AppCompatActivity() {
         }
 
         override fun onConnectionResumed(phBridge: PHBridge) {
-            changeText("onConnectionResumed")
+//            changeText("onConnectionResumed")
         }
 
         override fun onConnectionLost(phAccessPoint: PHAccessPoint) {

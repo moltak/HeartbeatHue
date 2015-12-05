@@ -61,19 +61,18 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         val rand = Random()
 
         for (i in 0..size - 1) {
-            if (i == 3) break
-
             val lightState = PHLightState()
-            lightState.isOn = true
             val xy = PHUtilities.calculateXYFromRGB(
                     hues.hues[i].R,
                     hues.hues[i].G,
                     hues.hues[i].B,
                     bridge.resourceCache.allLights[i].modelNumber)
-            lightState.x = xy[0]
-            lightState.y = xy[1]
+//            lightState.x = xy[0]
+//            lightState.y = xy[1]
+            lightState.isOn = true
 
 //            lightState.hue = rand.nextInt(65536)
+            lightState.hue = hues.hues[i].toHue()
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
 
             Log.d(TAG, "   $i -> ${lightState.hue}, x = ${xy[0]}, y = ${xy[1]}, ${lightState.validateState()}")

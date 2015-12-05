@@ -9,6 +9,7 @@ class LevelCreator(hueCount: Int = 3, stageCount: Int = 20) {
     val hues: MutableList<Hues> = ArrayList()
     val hueCount: Int
     val stageCount: Int
+    private val MAX_COLOR = 255
 
     init {
         this.hueCount = hueCount
@@ -18,17 +19,17 @@ class LevelCreator(hueCount: Int = 3, stageCount: Int = 20) {
         rand.setSeed(Date().time)
 
         for (i in 1..stageCount) {
-            val a = rand.nextInt(63)
-            val r = rand.nextInt(63)
-            val g = rand.nextInt(63)
-            val b = rand.nextInt(63)
+            val a = rand.nextInt(MAX_COLOR)
+            val r = rand.nextInt(MAX_COLOR)
+            val g = rand.nextInt(MAX_COLOR)
+            val b = rand.nextInt(MAX_COLOR)
 
             var hueStages = Array(hueCount, { i -> HueStage(a, r, g, b)})
             hueStages[r % hueCount] = createInverseExponentialColor(hueStages[0], i)
 
             hues.add(Hues(hueStages))
 
-            //println("${hueStages[0].toString()}  ${hueStages[1].toString()} ${hueStages[2].toString()}")
+            println("${hueStages[0].toString()}  ${hueStages[1].toString()} ${hueStages[2].toString()}")
         }
     }
 
