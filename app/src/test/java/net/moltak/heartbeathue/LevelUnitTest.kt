@@ -27,7 +27,7 @@ class LevelUnitTest {
     @Throws(Exception::class)
     fun stagesHaveADifferentColors() {
         var levelCreator = LevelCreator(3, 20)
-        assertTrue(levelCreator.hues[0].hues[0].R != levelCreator.hues[1].hues[1].R)
+        assertTrue(levelCreator.hues[0].stages[0].R != levelCreator.hues[1].stages[1].R)
     }
 
     @Test
@@ -36,9 +36,9 @@ class LevelUnitTest {
         var levelCreator = LevelCreator()
 
         val hues = levelCreator.hues[10]
-        val hue0 = hues.hues[0]
-        val hue1 = hues.hues[1]
-        val hue2 = hues.hues[2]
+        val hue0 = hues.stages[0]
+        val hue1 = hues.stages[1]
+        val hue2 = hues.stages[2]
 
         assertFalse((hue0.R == hue1.R) && (hue1.R == hue2.R) && (hue2.R == hue0.R))
     }
@@ -49,9 +49,9 @@ class LevelUnitTest {
         val levelCreator = LevelCreator()
 
         val hues = levelCreator.hues[10]
-        assertNotEquals(0, hues.hues[0].A)
-        assertNotEquals(0, hues.hues[0].R)
-        assertNotEquals(0, hues.hues[0].G)
-        assertNotEquals(0, hues.hues[0].B)
+        assertNotEquals(0, hues.stages[0].A)
+        assertNotEquals(0, hues.stages[0].R)
+        assertNotEquals(0, hues.stages[0].G)
+        assertNotEquals(0, hues.stages[0].B)
     }
 }

@@ -63,7 +63,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         val size = bridge?.resourceCache?.allLights?.size ?: return false
 
         for (i in 0..size - 1) {
-            val lightState = changeForCIE(hues.hues[i], bridge.resourceCache.allLights[i].modelNumber)
+            val lightState = changeForCIE(hues.stages[i], bridge.resourceCache.allLights[i].modelNumber)
 //            val lightState = changeForHsv(hues, i)
             lightState.isOn = true
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
@@ -85,7 +85,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
     private fun changeForHsv(hues: Hues, i: Int): PHLightState {
         val lightState = PHLightState()
-        val hsv = hues.hues[i].toHSV()
+        val hsv = hues.stages[i].toHSV()
         lightState.hue = hsv[0].toInt()
         lightState.saturation = hsv[1].toInt()
         lightState.brightness = hsv[2].toInt()
