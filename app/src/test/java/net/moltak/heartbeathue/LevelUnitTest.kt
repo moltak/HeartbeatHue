@@ -20,14 +20,14 @@ class LevelUnitTest {
     @Throws(Exception::class)
     fun levelObjectHasHad20Stages() {
         var levelCreator = LevelCreator()
-        assertEquals(20, levelCreator.getHues().size)
+        assertEquals(20, levelCreator.hues.size)
     }
 
     @Test
     @Throws(Exception::class)
     fun stagesHaveADifferentColors() {
         var levelCreator = LevelCreator(3, 20)
-        assertTrue(levelCreator.getHues()[0].hues[0].R != levelCreator.getHues()[1].hues[1].R)
+        assertTrue(levelCreator.hues[0].hues[0].R != levelCreator.hues[1].hues[1].R)
     }
 
     @Test
@@ -35,7 +35,7 @@ class LevelUnitTest {
     fun stagHas2SameColors1DifferentColor() {
         var levelCreator = LevelCreator()
 
-        val hues = levelCreator.getHues()[10]
+        val hues = levelCreator.hues[10]
         val hue0 = hues.hues[0]
         val hue1 = hues.hues[1]
         val hue2 = hues.hues[2]
@@ -48,7 +48,7 @@ class LevelUnitTest {
     fun stageHas4ChannelColor() {
         val levelCreator = LevelCreator()
 
-        val hues = levelCreator.getHues()[10]
+        val hues = levelCreator.hues[10]
         assertNotEquals(0, hues.hues[0].A)
         assertNotEquals(0, hues.hues[0].R)
         assertNotEquals(0, hues.hues[0].G)

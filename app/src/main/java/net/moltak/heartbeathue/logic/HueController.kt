@@ -1,10 +1,13 @@
 package net.moltak.heartbeathue.logic
 
 import android.util.Log
-import com.philips.lighting.hue.sdk.*
+import com.philips.lighting.hue.sdk.PHAccessPoint
+import com.philips.lighting.hue.sdk.PHBridgeSearchManager
+import com.philips.lighting.hue.sdk.PHHueSDK
+import com.philips.lighting.hue.sdk.PHSDKListener
 import com.philips.lighting.hue.sdk.utilities.PHUtilities
 import com.philips.lighting.model.*
-import java.util.*
+import net.moltak.heartbeathue.util.ColorConverter
 
 /**
  * Created by engeng on 12/1/15.
@@ -15,6 +18,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     private val sharedPreferences: HueSharedPreferences
     private val listener: PHSDKListener
     private val levelCreator: LevelCreator
+    private val colorConverter = ColorConverter()
 
     private val TAG = "HUE_TAG"
     private val USERNAME = "HeartbeatHue"
@@ -72,7 +76,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     }
 
     private fun changeForCIE(stage: HueStage, modelNumber: String): PHLightState {
-        val xy = PHUtilities.calculateXYFromRGB(stage.R, stage.G, stage.B, modelNumber);
+        val xy = colorConverter.toXY(stage.R, stage.G, stage.B, modelNumber);
         val lightState = PHLightState()
         lightState.x = xy[0]
         lightState.y = xy[1]
