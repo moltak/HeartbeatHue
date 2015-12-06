@@ -58,27 +58,34 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         val bridge = phHueSDK.selectedBridge
         val size = bridge?.resourceCache?.allLights?.size ?: return false
 
-        val rand = Random()
-
         for (i in 0..size - 1) {
-            val lightState = PHLightState()
-            val xy = PHUtilities.calculateXYFromRGB(
-                    hues.hues[i].R,
-                    hues.hues[i].G,
-                    hues.hues[i].B,
-                    bridge.resourceCache.allLights[i].modelNumber)
-//            lightState.x = xy[0]
-//            lightState.y = xy[1]
+            val lightState = changeForCIE(hues.hues[i], bridge.resourceCache.allLights[i].modelNumber)
+//            val lightState = changeForHsv(hues, i)
             lightState.isOn = true
-
-//            lightState.hue = rand.nextInt(65536)
-//            lightState.hue = hues.hues[i].toHue()
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
 
-            Log.d(TAG, "   $i -> ${lightState.hue}, x = ${xy[0]}, y = ${xy[1]}, ${lightState.validateState()}")
+            Log.d(TAG, "   $i -> ${lightState.hue}, x = ${lightState.x}, y = ${lightState.y}, " +
+                    "${lightState.validateState()}")
         }
 
         return true
+    }
+
+    private fun changeForCIE(stage: HueStage, modelNumber: String): PHLightState {
+        val xy = PHUtilities.calculateXYFromRGB(stage.R, stage.G, stage.B, modelNumber);
+        val lightState = PHLightState()
+        lightState.x = xy[0]
+        lightState.y = xy[1]
+        return lightState
+    }
+
+    private fun changeForHsv(hues: Hues, i: Int): PHLightState {
+        val lightState = PHLightState()
+        val hsv = hues.hues[i].toHSV()
+        lightState.hue = hsv[0].toInt()
+        lightState.saturation = hsv[1].toInt()
+        lightState.brightness = hsv[2].toInt()
+        return lightState
     }
 
     fun searchBridge() {
