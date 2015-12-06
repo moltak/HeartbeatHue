@@ -14,13 +14,14 @@ import net.moltak.heartbeathue.logic.HueController
 import net.moltak.heartbeathue.logic.HueSharedPreferences
 import net.moltak.heartbeathue.logic.HueSimpleListener
 import net.moltak.heartbeathue.logic.LevelCreator
+import net.moltak.heartbeathue.logic.color.InverseExponencialColorCreator
 
 public class MainActivity : AppCompatActivity() {
 
     private var hueController: HueController? = null
     private var hueCount = 0
 
-    private val levelCreator = LevelCreator()
+    private val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
     private val textView: TextView by bindView(R.id.textView)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +29,7 @@ public class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
 
-        hueController = HueController(HueSharedPreferences.getInstance(this), listener, LevelCreator(3, 20))
+        hueController = HueController(HueSharedPreferences.getInstance(this), listener, levelCreator)
         if (hueController?.connectToLastAccessPoint() == false) {
             hueController?.searchBridge()
         }

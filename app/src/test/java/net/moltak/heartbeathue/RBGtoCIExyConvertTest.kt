@@ -1,6 +1,7 @@
 package net.moltak.heartbeathue
 
 import net.moltak.heartbeathue.logic.LevelCreator
+import net.moltak.heartbeathue.logic.color.InverseExponencialColorCreator
 import net.moltak.heartbeathue.util.ColorConverter
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -51,7 +52,7 @@ class RBGtoCIExyConvertTest {
     }
 
     private fun stageColorToCIECovertTest() {
-        val levelCreator = LevelCreator()
+        val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
         val converter = ColorConverter()
 
         for (i in 0..levelCreator.hueCount - 1) {
