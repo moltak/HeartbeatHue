@@ -55,4 +55,10 @@ class LevelUnitTest {
         assertNotEquals(0, hues.stages[0].G)
         assertNotEquals(0, hues.stages[0].B)
     }
+
+    @Test
+    fun specialColorCreatorShouldHasHueCount() {
+        val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
+        assertEquals(levelCreator.hueCount, levelCreator.specialcolorCreator.hueCount)
+    }
 }

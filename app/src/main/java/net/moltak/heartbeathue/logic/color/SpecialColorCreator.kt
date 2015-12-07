@@ -6,5 +6,7 @@ import net.moltak.heartbeathue.logic.HueStage
  * Created by engeng on 12/6/15.
  */
 interface SpecialColorCreator {
-    public fun create(hueStage: HueStage, stage: Int): HueStage
+    var hueCount: Int
+
+    public fun create(stage: Int): Array<HueStage>
 }

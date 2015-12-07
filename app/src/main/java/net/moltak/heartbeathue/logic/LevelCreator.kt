@@ -12,26 +12,16 @@ class LevelCreator(hueCount: Int = 3, stageCount: Int = 20, colorCreator: Specia
     val hues: MutableList<Hues> = ArrayList()
     val hueCount: Int
     val stageCount: Int
-    val colorCreator: SpecialColorCreator
-    private val MAX_COLOR = 255
+    val specialcolorCreator: SpecialColorCreator
 
     init {
         this.hueCount = hueCount
         this.stageCount = stageCount
-        this.colorCreator = colorCreator
+        this.specialcolorCreator = colorCreator
+        this.specialcolorCreator.hueCount = hueCount
 
-        val rand = Random()
-        rand.setSeed(Date().time)
-
-        for (i in 1..stageCount) {
-            val a = rand.nextInt(MAX_COLOR)
-            val r = rand.nextInt(MAX_COLOR)
-            val g = rand.nextInt(MAX_COLOR)
-            val b = rand.nextInt(MAX_COLOR)
-
-            var hueStages = Array(hueCount, { HueStage(a, r, g, b)})
-            hueStages[r % hueCount] = colorCreator.create(hueStages[0], i)
-
+        for (i in 0..stageCount - 1) {
+            var hueStages = colorCreator.create(i)
             hues.add(Hues(hueStages))
 
             println("${hueStages[0].toString()}  ${hueStages[1].toString()} ${hueStages[2].toString()}")
