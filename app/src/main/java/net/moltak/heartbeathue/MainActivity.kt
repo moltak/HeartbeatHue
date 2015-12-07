@@ -6,26 +6,30 @@ import android.widget.TextView
 import butterknife.ButterKnife
 import butterknife.OnClick
 import com.philips.lighting.hue.sdk.PHAccessPoint
+import com.philips.lighting.hue.sdk.PHMessageType
 import com.philips.lighting.model.PHBridge
+import com.philips.lighting.model.PHHueError
 import net.moltak.heartbeathue.library.bindView
 import net.moltak.heartbeathue.logic.HueController
 import net.moltak.heartbeathue.logic.HueSharedPreferences
 import net.moltak.heartbeathue.logic.HueSimpleListener
 import net.moltak.heartbeathue.logic.LevelCreator
+import net.moltak.heartbeathue.logic.color.InverseExponencialColorCreator
 
 public class MainActivity : AppCompatActivity() {
 
     private var hueController: HueController? = null
-    private val levelCreator = LevelCreator()
+    private var hueCount = 0
 
-    val textView: TextView by bindView(R.id.textView)
+    private val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
+    private val textView: TextView by bindView(R.id.textView)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
 
-        hueController = HueController(HueSharedPreferences.getInstance(this), listener)
+        hueController = HueController(HueSharedPreferences.getInstance(this), listener, levelCreator)
         if (hueController?.connectToLastAccessPoint() == false) {
             hueController?.searchBridge()
         }
@@ -42,7 +46,7 @@ public class MainActivity : AppCompatActivity() {
         }
 
         override fun onConnectionResumed(phBridge: PHBridge) {
-            changeText("onConnectionResumed")
+//            changeText("onConnectionResumed")
         }
 
         override fun onConnectionLost(phAccessPoint: PHAccessPoint) {
@@ -54,7 +58,18 @@ public class MainActivity : AppCompatActivity() {
         }
 
         override fun onCacheUpdated(list: List<Int>, phBridge: PHBridge) {
-            changeText("onCacheUpdated")
+//            changeText("onCacheUpdated")
+        }
+
+        override fun onError(code: Int, msg: String) {
+            when (code) {
+                PHHueError.NO_CONNECTION -> changeText("On No Connection")
+                PHHueError.AUTHENTICATION_FAILED,
+                PHMessageType.PUSHLINK_AUTHENTICATION_FAILED -> changeText("Authentication Failed")
+                PHHueError.BRIDGE_NOT_RESPONDING -> changeText("Bridge Not Responding...")
+                PHMessageType.BRIDGE_NOT_FOUND -> changeText("Bridge Not Found")
+                else -> changeText("on Error Called : $code : $msg")
+            }
         }
     }
 
@@ -64,10 +79,13 @@ public class MainActivity : AppCompatActivity() {
 
     @OnClick(R.id.buttonChangeColor)
     public fun onChangeColorButtonClicked() {
-        if (hueController?.changeTheColor(levelCreator.getHues()[10]) ?: false) {
-            textView.text = "color changed!"
+        if (hueController?.changeTheColor(levelCreator.hues[hueCount]) ?: false) {
+            textView.text = "Stage: -> ${hueCount + 1}, color changed!"
         } else {
             textView.text = "fail!"
         }
+
+        if (hueCount == levelCreator.stageCount - 1) hueCount = 0
+        else hueCount ++
     }
 }

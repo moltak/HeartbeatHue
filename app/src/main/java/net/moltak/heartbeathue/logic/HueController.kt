@@ -7,15 +7,18 @@ import com.philips.lighting.hue.sdk.PHHueSDK
 import com.philips.lighting.hue.sdk.PHSDKListener
 import com.philips.lighting.hue.sdk.utilities.PHUtilities
 import com.philips.lighting.model.*
-import java.util.*
+import net.moltak.heartbeathue.util.ColorConverter
 
 /**
  * Created by engeng on 12/1/15.
  */
-class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener: PHSDKListener) {
+class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener: PHSDKListener,
+                    levelCreator: LevelCreator) {
     private val phHueSDK: PHHueSDK
     private val sharedPreferences: HueSharedPreferences
     private val listener: PHSDKListener
+    private val levelCreator: LevelCreator
+    private val colorConverter = ColorConverter()
 
     private val TAG = "HUE_TAG"
     private val USERNAME = "HeartbeatHue"
@@ -23,6 +26,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     init {
         this.sharedPreferences = sharedPreferences
         this.listener = phdSdkPHSDKListener
+        this.levelCreator = levelCreator
 
         phHueSDK = PHHueSDK.create()
         phHueSDK.appName = "HeartbeatHue"
@@ -32,12 +36,13 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     fun connectToLastAccessPoint(): Boolean {
         phHueSDK.notificationManager.registerSDKListener(simpleListener)
 
-        if (sharedPreferences.lastConnectedIPAddress.length != 0
-                && sharedPreferences.username.length != 0) {
+        val userName = sharedPreferences.getUserName()
+        val lastIpAddress = sharedPreferences.getLastConnectedIpAddress()
 
+        if (!userName.equals("") && !lastIpAddress.equals("")) {
             val lastAccessPoint = PHAccessPoint();
-            lastAccessPoint.ipAddress = sharedPreferences.lastConnectedIPAddress
-            lastAccessPoint.username = sharedPreferences.username
+            lastAccessPoint.username = userName
+            lastAccessPoint.ipAddress = lastIpAddress
 
             if (!phHueSDK.isAccessPointConnected(lastAccessPoint)) {
                 phHueSDK.connect(lastAccessPoint)
@@ -57,28 +62,34 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         val bridge = phHueSDK.selectedBridge
         val size = bridge?.resourceCache?.allLights?.size ?: return false
 
-        val rand = Random()
-
         for (i in 0..size - 1) {
-            if (i == 3) break
-
-            val lightState = PHLightState()
+            val lightState = changeForCIE(hues.stages[i], bridge.resourceCache.allLights[i].modelNumber)
+//            val lightState = changeForHsv(hues, i)
             lightState.isOn = true
-//            val xy = PHUtilities.calculateXYFromRGB(
-//                    hues.hues[i].R,
-//                    hues.hues[i].G,
-//                    hues.hues[i].B,
-//                    bridge.resourceCache.allLights[i].modelNumber)
-//            lightState.x = xy[0]
-//            lightState.y = xy[1]
-
-            lightState.hue = rand.nextInt(65536)
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
 
-            Log.d(TAG, "   $i -> ${lightState.hue}, ${lightState.validateState()}")
+            Log.d(TAG, "   $i -> ${lightState.hue}, x = ${lightState.x}, y = ${lightState.y}, " +
+                    "${lightState.validateState()}")
         }
 
         return true
+    }
+
+    private fun changeForCIE(stage: HueStage, modelNumber: String): PHLightState {
+        val xy = colorConverter.toXY(stage.R, stage.G, stage.B, modelNumber);
+        val lightState = PHLightState()
+        lightState.x = xy[0]
+        lightState.y = xy[1]
+        return lightState
+    }
+
+    private fun changeForHsv(hues: Hues, i: Int): PHLightState {
+        val lightState = PHLightState()
+        val hsv = hues.stages[i].toHSV()
+        lightState.hue = hsv[0].toInt()
+        lightState.saturation = hsv[1].toInt()
+        lightState.brightness = hsv[2].toInt()
+        return lightState
     }
 
     fun searchBridge() {
@@ -148,8 +159,9 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
             listener.onConnectionLost(phAccessPoint)
         }
 
-        override fun onError(i: Int, s: String) {
-            listener.onError(i, s)
+        override fun onError(code: Int, msg: String) {
+            Log.e(TAG, "on Error Called : $code : $msg");
+            listener.onError(code, msg)
         }
 
         override fun onParsingErrors(list: List<PHHueParsingError>) {
@@ -162,8 +174,8 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     }
 
     private val simpleLightListener = object : HueLightSimpleListener() {
-        override fun onError(p0: Int, p1: String?) {
-            Log.e(TAG, "LightListener -> $p1")
+        override fun onError(code: Int, msg: String?) {
+            Log.e(TAG, "LightListener -> $msg")
         }
 
         override fun onStateUpdate(p0: MutableMap<String, String>?, p1: MutableList<PHHueError>?) {
