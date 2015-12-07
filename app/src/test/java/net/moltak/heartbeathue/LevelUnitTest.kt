@@ -50,7 +50,6 @@ class LevelUnitTest {
         val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
 
         val hues = levelCreator.hues[10]
-        assertNotEquals(0, hues.stages[0].A)
         assertNotEquals(0, hues.stages[0].R)
         assertNotEquals(0, hues.stages[0].G)
         assertNotEquals(0, hues.stages[0].B)

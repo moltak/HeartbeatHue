@@ -13,6 +13,6 @@ class CieOppositeXyColorCreator : SpecialColorCreator {
         }
 
     override fun create(stage: Int): Array<HueStage> {
-        return Array(hueCount, { HueStage(0, 0, 0, 0)})
+        return Array(hueCount, { HueStage(0, 0, 0)})
     }
 }

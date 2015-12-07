@@ -19,17 +19,16 @@ class InverseExponencialColorCreator : SpecialColorCreator {
         val rand = Random()
         rand.setSeed(Date().time)
 
-        val a = rand.nextInt(MAX_COLOR)
         val r = rand.nextInt(MAX_COLOR)
         val g = rand.nextInt(MAX_COLOR)
         val b = rand.nextInt(MAX_COLOR)
 
-        var hueStages = Array(hueCount, { HueStage(a, r, g, b)})
-        hueStages[r % hueCount] = createSpecialHueColor(a, b, g, r, stage)
+        var hueStages = Array(hueCount, { HueStage(r, g, b)})
+        hueStages[r % hueCount] = createSpecialHueColor(b, g, r, stage)
         return hueStages
     }
 
-    private fun createSpecialHueColor(a: Int, b: Int, g: Int, r: Int, stage: Int): HueStage {
+    private fun createSpecialHueColor(b: Int, g: Int, r: Int, stage: Int): HueStage {
         // create special color
         // n = color - color * (1/stage^2), inverse exponential,
         var exponential: Double = 1.0 / (stage * stage)
@@ -40,7 +39,6 @@ class InverseExponencialColorCreator : SpecialColorCreator {
 
         //println("Stage $stage   -->  $exponential")
         val specialHue = HueStage(
-                (a - a * exponential).toInt(),
                 (r - r * exponential).toInt(),
                 (g - g * exponential).toInt(),
                 (b - b * exponential).toInt())
