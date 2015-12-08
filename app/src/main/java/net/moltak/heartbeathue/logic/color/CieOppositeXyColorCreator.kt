@@ -17,10 +17,6 @@ class CieOppositeXyColorCreator : SpecialColorCreator {
     val totalStage = 20
     val rand = Random()
 
-    init {
-        rand.setSeed(Date().time)
-    }
-
     override fun create(stage: Int): Array<HueStage> {
         val min = createMinimumValue(stage)
 
