@@ -21,14 +21,14 @@ class LevelUnitTest {
     @Throws(Exception::class)
     fun levelObjectHasHad20Stages() {
         var levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
-        assertEquals(20, levelCreator.hues.size)
+        assertEquals(20, levelCreator.stages.size)
     }
 
     @Test
     @Throws(Exception::class)
     fun stagesHaveADifferentColors() {
         var levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
-        assertTrue(levelCreator.hues[0].stages[0].R != levelCreator.hues[1].stages[1].R)
+        assertTrue(levelCreator.stages[0].bulbs[0].R != levelCreator.stages[1].bulbs[1].R)
     }
 
     @Test
@@ -36,10 +36,10 @@ class LevelUnitTest {
     fun stagHas2SameColors1DifferentColor() {
         var levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
 
-        val hues = levelCreator.hues[10]
-        val hue0 = hues.stages[0]
-        val hue1 = hues.stages[1]
-        val hue2 = hues.stages[2]
+        val hues = levelCreator.stages[10]
+        val hue0 = hues.bulbs[0]
+        val hue1 = hues.bulbs[1]
+        val hue2 = hues.bulbs[2]
 
         assertFalse((hue0.R == hue1.R) && (hue1.R == hue2.R) && (hue2.R == hue0.R))
     }
@@ -49,15 +49,15 @@ class LevelUnitTest {
     fun stageHas4ChannelColor() {
         val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
 
-        val hues = levelCreator.hues[10]
-        assertNotEquals(0, hues.stages[0].R)
-        assertNotEquals(0, hues.stages[0].G)
-        assertNotEquals(0, hues.stages[0].B)
+        val hues = levelCreator.stages[10]
+        assertNotEquals(0, hues.bulbs[0].R)
+        assertNotEquals(0, hues.bulbs[0].G)
+        assertNotEquals(0, hues.bulbs[0].B)
     }
 
     @Test
     fun specialColorCreatorShouldHasHueCount() {
         val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
-        assertEquals(levelCreator.hueCount, levelCreator.specialcolorCreator.hueCount)
+        assertEquals(levelCreator.bulbCount, levelCreator.specialColorCreator.bulbCount)
     }
 }

@@ -79,7 +79,7 @@ public class MainActivity : AppCompatActivity() {
 
     @OnClick(R.id.buttonChangeColor)
     public fun onChangeColorButtonClicked() {
-        if (hueController?.changeTheColor(levelCreator.hues[hueCount]) ?: false) {
+        if (hueController?.changeTheColor(levelCreator.stages[hueCount]) ?: false) {
             textView.text = "Stage: -> ${hueCount + 1}, color changed!"
         } else {
             textView.text = "fail!"

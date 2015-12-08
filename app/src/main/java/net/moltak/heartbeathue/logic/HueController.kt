@@ -58,12 +58,12 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         phHueSDK.disableAllHeartbeat();
     }
 
-    fun changeTheColor(hues: Hues): Boolean {
+    fun changeTheColor(bulb: Bulb): Boolean {
         val bridge = phHueSDK.selectedBridge
         val size = bridge?.resourceCache?.allLights?.size ?: return false
 
         for (i in 0..size - 1) {
-            val lightState = changeForCIE(hues.stages[i], bridge.resourceCache.allLights[i].modelNumber)
+            val lightState = changeForCIE(bulb.bulbs[i], bridge.resourceCache.allLights[i].modelNumber)
 //            val lightState = changeForHsv(hues, i)
             lightState.isOn = true
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
@@ -75,7 +75,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         return true
     }
 
-    private fun changeForCIE(stage: HueStage, modelNumber: String): PHLightState {
+    private fun changeForCIE(stage: BulbColor, modelNumber: String): PHLightState {
         val xy = colorConverter.toXY(stage.R, stage.G, stage.B, modelNumber);
         val lightState = PHLightState()
         lightState.x = xy[0]
@@ -83,9 +83,9 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         return lightState
     }
 
-    private fun changeForHsv(hues: Hues, i: Int): PHLightState {
+    private fun changeForHsv(bulb: Bulb, i: Int): PHLightState {
         val lightState = PHLightState()
-        val hsv = hues.stages[i].toHSV()
+        val hsv = bulb.bulbs[i].toHSV()
         lightState.hue = hsv[0].toInt()
         lightState.saturation = hsv[1].toInt()
         lightState.brightness = hsv[2].toInt()
