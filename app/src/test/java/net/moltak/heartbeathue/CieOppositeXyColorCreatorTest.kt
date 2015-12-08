@@ -15,7 +15,7 @@ class CieOppositeXyColorCreatorTest {
     @Test
     fun createorShouldReturnHueStages() {
         val colorCreator = CieOppositeXyColorCreator()
-        assertTrue(colorCreator.create(0) is Array<HueStage>)
+        assertTrue(colorCreator.create(1) is Array<HueStage>)
     }
 
     @Test
@@ -25,10 +25,14 @@ class CieOppositeXyColorCreatorTest {
     }
 
     @Test
-    fun shouldHas255ColorAtFirstStage() {
+    fun shouldHasMinValue() {
         val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator())
-        assertTrue { levelCreator.hues[0].stages[0].R == 255
-                || levelCreator.hues[0].stages[0].G == 255
-                || levelCreator.hues[0].stages[0].B == 255}
+        val stages = levelCreator.hues[0].stages
+
+        for (i in 1..levelCreator.stageCount) {
+            val MINVALUE : Int = ((255 / i) - (255 / levelCreator.stageCount))
+            println("MinValue = $MINVALUE")
+            assert(stages[0].R > MINVALUE || stages[0].G > MINVALUE || stages[0].B > MINVALUE)
+        }
     }
 }

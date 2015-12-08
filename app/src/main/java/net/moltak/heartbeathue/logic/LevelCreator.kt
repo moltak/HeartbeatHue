@@ -20,11 +20,11 @@ class LevelCreator(hueCount: Int = 3, stageCount: Int = 20, colorCreator: Specia
         this.specialcolorCreator = colorCreator
         this.specialcolorCreator.hueCount = hueCount
 
-        for (i in 0..stageCount - 1) {
+        for (i in 1..stageCount) {
             var hueStages = colorCreator.create(i)
             hues.add(Hues(hueStages))
 
-            println("${hueStages[0].toString()}  ${hueStages[1].toString()} ${hueStages[2].toString()}")
+            println("Stage $i -> ${hueStages[0].toString()}  ${hueStages[1].toString()} ${hueStages[2].toString()}")
         }
     }
 }

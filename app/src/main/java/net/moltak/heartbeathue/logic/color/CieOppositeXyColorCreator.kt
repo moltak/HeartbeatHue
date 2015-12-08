@@ -14,20 +14,34 @@ class CieOppositeXyColorCreator : SpecialColorCreator {
         }
 
     val MAX_COLOR = 255
+    val totalStage = 20
+    val rand = Random()
+
+    init {
+        rand.setSeed(Date().time)
+    }
 
     override fun create(stage: Int): Array<HueStage> {
-        val rand = Random()
-        rand.setSeed(Date().time)
+        val min = createMinimumValue(stage)
 
-        val r = rand.nextInt(MAX_COLOR)
-        val g = rand.nextInt(MAX_COLOR)
-        val b = rand.nextInt(MAX_COLOR)
+        val r = createRandomValueGreaterThanMin(min, rand)
+        val g = createRandomValueGreaterThanMin(min, rand)
+        val b = createRandomValueGreaterThanMin(min, rand)
 
         val hueStages = Array(hueCount, { HueStage(r, g, b)})
-
+        return hueStages
     }
 
     private fun createMinimumValue(stage: Int): Int {
-        return (MAX_COLOR * (1 / stage.toFloat())).toInt()
+        return ((MAX_COLOR / stage) - (MAX_COLOR / totalStage))
+    }
+
+    private fun createRandomValueGreaterThanMin(min: Int, rand: Random): Int {
+        while (true) {
+            val v = rand.nextInt(MAX_COLOR)
+            if (v >= min) {
+                return v
+            }
+        }
     }
 }
