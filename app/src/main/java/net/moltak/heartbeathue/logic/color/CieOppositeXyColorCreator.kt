@@ -33,7 +33,7 @@ class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelN
         val b = createRandomValueGreaterThanMin(min, rand)
 
         val bulbs = Array(bulbCount, { BulbColor(r, g, b)})
-        bulbs[r % bulbCount] = createSpecialBulbColor(bulbs[0])
+        bulbs[r % bulbCount] = createSpecialBulbColor(bulbs[0], stage)
         return bulbs
     }
 
@@ -50,10 +50,10 @@ class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelN
         }
     }
 
-    private fun createSpecialBulbColor(bulbColor: BulbColor): BulbColor {
+    private fun createSpecialBulbColor(bulbColor: BulbColor, stage: Int): BulbColor {
         val xy = colorConverter.toXY(bulbColor.R, bulbColor.G, bulbColor.B, modelNumber)
-        val x2 = (gamutCenterX * 2) - xy[0]
-        val y2 = (gamutCenterY * 2) - xy[1]
+        val x2 = (gamutCenterX * 2) - (xy[0] / stage)
+        val y2 = (gamutCenterY * 2) - (xy[1] / stage)
         val newXY = FloatArray(2)
         newXY[0] = x2
         newXY[1] = y2
