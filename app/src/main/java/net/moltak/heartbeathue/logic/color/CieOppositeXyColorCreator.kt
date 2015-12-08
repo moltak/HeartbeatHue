@@ -1,6 +1,7 @@
 package net.moltak.heartbeathue.logic.color
 
 import net.moltak.heartbeathue.logic.BulbColor
+import net.moltak.heartbeathue.util.ColorConverter
 import java.util.*
 
 /**
@@ -9,11 +10,14 @@ import java.util.*
 class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelNumber: String) : SpecialColorCreator {
     override val bulbCount: Int
     override val stageCount: Int
-    val modelName: String
+    val modelNumber: String
+    val colorConverter = ColorConverter()
+    val gamutCenterX = 0.21f
+    val gamutCenterY = 0.29f
 
     init {
         this.bulbCount = bulbCount
-        this.modelName = modelNumber
+        this.modelNumber = modelNumber
         this.stageCount = stageCount
     }
 
@@ -28,8 +32,9 @@ class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelN
         val g = createRandomValueGreaterThanMin(min, rand)
         val b = createRandomValueGreaterThanMin(min, rand)
 
-        val hueStages = Array(bulbCount, { BulbColor(r, g, b)})
-        return hueStages
+        val bulbs = Array(bulbCount, { BulbColor(r, g, b)})
+        bulbs[r % bulbCount] = createSpecialBulbColor(bulbs[0])
+        return bulbs
     }
 
     private fun createMinimumValue(stage: Int): Int {
@@ -43,5 +48,16 @@ class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelN
                 return v
             }
         }
+    }
+
+    private fun createSpecialBulbColor(bulbColor: BulbColor): BulbColor {
+        val xy = colorConverter.toXY(bulbColor.R, bulbColor.G, bulbColor.B, modelNumber)
+        val x2 = (gamutCenterX * 2) - xy[0]
+        val y2 = (gamutCenterY * 2) - xy[1]
+        val newXY = FloatArray(2)
+        newXY[0] = x2
+        newXY[1] = y2
+
+        return colorConverter.toRGB(newXY, modelNumber)
     }
 }
