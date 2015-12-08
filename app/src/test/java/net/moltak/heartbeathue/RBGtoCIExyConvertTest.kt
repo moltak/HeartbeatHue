@@ -52,7 +52,7 @@ class RBGtoCIExyConvertTest {
     }
 
     private fun stageColorToCIECovertTest() {
-        val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
+        val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator(3))
         val converter = ColorConverter()
 
         for (i in 0..levelCreator.bulbCount - 1) {

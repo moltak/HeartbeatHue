@@ -21,7 +21,7 @@ public class MainActivity : AppCompatActivity() {
     private var hueController: HueController? = null
     private var hueCount = 0
 
-    private val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
+    private val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator(3, 20))
     private val textView: TextView by bindView(R.id.textView)
 
     override fun onCreate(savedInstanceState: Bundle?) {

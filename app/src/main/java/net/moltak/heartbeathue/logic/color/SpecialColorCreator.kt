@@ -6,7 +6,7 @@ import net.moltak.heartbeathue.logic.BulbColor
  * Created by engeng on 12/6/15.
  */
 interface SpecialColorCreator {
-    var bulbCount: Int
-
+    val bulbCount: Int
+    val stageCount: Int
     public fun create(stage: Int): Array<BulbColor>
 }

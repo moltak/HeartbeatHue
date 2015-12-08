@@ -6,15 +6,19 @@ import java.util.*
 /**
  * Created by moltak on 15. 12. 8..
  */
-class CieOppositeXyColorCreator : SpecialColorCreator {
-    override var bulbCount: Int = 0
-        get() = field
-        set(value) {
-            field = value
-        }
+class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelNumber: String) : SpecialColorCreator {
+    override val bulbCount: Int
+    override val stageCount: Int
+    val modelName: String
+
+    init {
+        this.bulbCount = bulbCount
+        this.modelName = modelNumber
+        this.stageCount = stageCount
+    }
 
     val MAX_COLOR = 255
-    val totalStage = 20
+
     val rand = Random()
 
     override fun create(stage: Int): Array<BulbColor> {
@@ -29,7 +33,7 @@ class CieOppositeXyColorCreator : SpecialColorCreator {
     }
 
     private fun createMinimumValue(stage: Int): Int {
-        return ((MAX_COLOR / stage) - (MAX_COLOR / totalStage))
+        return ((MAX_COLOR / stage) - (MAX_COLOR / stageCount))
     }
 
     private fun createRandomValueGreaterThanMin(min: Int, rand: Random): Int {

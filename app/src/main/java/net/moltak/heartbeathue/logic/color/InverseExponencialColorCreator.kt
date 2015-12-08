@@ -6,14 +6,15 @@ import java.util.*
 /**
  * Created by engeng on 12/6/15.
  */
-class InverseExponencialColorCreator : SpecialColorCreator {
-    override var bulbCount: Int = 0
-        get() = field
-        set(value) {
-            field = value
-        }
-
+class InverseExponencialColorCreator(bulbCount: Int = 3, stageCount: Int = 20) : SpecialColorCreator {
+    override val bulbCount: Int
+    override val stageCount: Int
     val MAX_COLOR = 255
+
+    init {
+        this.bulbCount = bulbCount
+        this.stageCount = stageCount
+    }
 
     override fun create(stage: Int): Array<BulbColor> {
         val rand = Random()

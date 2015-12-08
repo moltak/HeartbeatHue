@@ -14,19 +14,19 @@ class CieOppositeXyColorCreatorTest {
 
     @Test
     fun createorShouldReturnHueStages() {
-        val colorCreator = CieOppositeXyColorCreator()
+        val colorCreator = CieOppositeXyColorCreator(3, 20, "modelNumber")
         assertTrue(colorCreator.create(1) is Array<BulbColor>)
     }
 
     @Test
     fun creatorShouldReturnSameHueCountWithLevelCreator() {
-        val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator())
-        assertEquals(levelCreator.bulbCount, levelCreator.specialColorCreator.bulbCount)
+        val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator(3, 20, "modelNumber"))
+        assertEquals(levelCreator.bulbCount, (levelCreator.specialColorCreator as CieOppositeXyColorCreator).bulbCount)
     }
 
     @Test
     fun shouldHasMinValue() {
-        val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator())
+        val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator(3, 20, "modelNumber"))
 
         for (i in 1..levelCreator.stageCount) {
             val MINVALUE : Int = ((255 / i) - (255 / levelCreator.stageCount))
@@ -41,7 +41,6 @@ class CieOppositeXyColorCreatorTest {
 
     @Test
     fun shouldHasOppositeValue() {
-
+        val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator(3, 20, "modelNumber"))
     }
-
 }
