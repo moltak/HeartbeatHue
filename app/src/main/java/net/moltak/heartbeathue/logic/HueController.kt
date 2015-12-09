@@ -6,6 +6,7 @@ import com.philips.lighting.hue.sdk.PHBridgeSearchManager
 import com.philips.lighting.hue.sdk.PHHueSDK
 import com.philips.lighting.hue.sdk.PHSDKListener
 import com.philips.lighting.hue.sdk.utilities.PHUtilities
+import com.philips.lighting.hue.sdk.utilities.impl.Color
 import com.philips.lighting.model.*
 import net.moltak.heartbeathue.util.ColorConverter
 
@@ -64,7 +65,15 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
         for (i in 0..size - 1) {
             val lightState = changeForCIE(bulb.bulbs[i], bridge.resourceCache.allLights[i].modelNumber)
+//            var color = 0
+//            when(i) {
+//                0 -> color = 0xff0000
+//                1 -> color = 0x8f9022
+//                2 -> color = 0xb83b00
+//            }
+//            val lightState = changeRGBToCIE(color, bridge.resourceCache.allLights[i].modelNumber)
 //            val lightState = changeForHsv(hues, i)
+
             lightState.isOn = true
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
 
@@ -89,6 +98,14 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         lightState.hue = hsv[0].toInt()
         lightState.saturation = hsv[1].toInt()
         lightState.brightness = hsv[2].toInt()
+        return lightState
+    }
+
+    private fun changeRGBToCIE(rgb: Int, modelNumber: String): PHLightState {
+        val xy = colorConverter.toXY(Color.red(rgb), Color.blue(rgb), Color.green(rgb), modelNumber);
+        val lightState = PHLightState()
+        lightState.x = xy[0]
+        lightState.y = xy[1]
         return lightState
     }
 

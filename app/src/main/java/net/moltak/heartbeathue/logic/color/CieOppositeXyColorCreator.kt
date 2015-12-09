@@ -6,14 +6,18 @@ import java.util.*
 
 /**
  * Created by moltak on 15. 12. 8..
+ * @link http://www.developers.meethue.com/documentation/supported-lights#colorTemperatureLight
  */
-class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelNumber: String) : SpecialColorCreator {
+class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelNumber: String = "LCT001") : SpecialColorCreator {
     override val bulbCount: Int
     override val stageCount: Int
     val modelNumber: String
     val colorConverter = ColorConverter()
-    val gamutCenterX = 0.21f
-    val gamutCenterY = 0.29f
+
+    // white: 0.3227,0.329
+    // 0.3944,0.3093
+    val gamutCenterX = 0.3944f //0.21f
+    val gamutCenterY = 0.3093f //0.29f
 
     init {
         this.bulbCount = bulbCount

@@ -14,14 +14,14 @@ import net.moltak.heartbeathue.logic.HueController
 import net.moltak.heartbeathue.logic.HueSharedPreferences
 import net.moltak.heartbeathue.logic.HueSimpleListener
 import net.moltak.heartbeathue.logic.LevelCreator
-import net.moltak.heartbeathue.logic.color.InverseExponencialColorCreator
+import net.moltak.heartbeathue.logic.color.CieOppositeXyColorCreator
 
 public class MainActivity : AppCompatActivity() {
 
     private var hueController: HueController? = null
     private var hueCount = 0
 
-    private val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator(3, 20))
+    private val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator())
     private val textView: TextView by bindView(R.id.textView)
 
     override fun onCreate(savedInstanceState: Bundle?) {
