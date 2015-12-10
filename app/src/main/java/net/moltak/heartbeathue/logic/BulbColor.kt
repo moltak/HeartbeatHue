@@ -4,7 +4,7 @@ import android.graphics.Color
 
 data class BulbColor(val R: Int, val G: Int, val B: Int) {
     fun toInt(): Int? {
-        return Color.argb(0, R, G, B).toInt()
+        return Color.argb(255, R, G, B).toInt()
     }
 
     fun toHSV(): FloatArray {

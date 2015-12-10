@@ -61,6 +61,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
     fun changeTheColor(bulb: Bulb): Boolean {
         val bridge = phHueSDK.selectedBridge
+        val resource = bridge?.resourceCache?.allLights ?: return false
 
         for (i in 0..levelCreator.bulbCount - 1) {
             val lightState = convertRGBtoCIE(bulb.bulbs[i], bridge.resourceCache.allLights[i].modelNumber)
