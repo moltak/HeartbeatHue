@@ -61,19 +61,11 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
     fun changeTheColor(bulb: Bulb): Boolean {
         val bridge = phHueSDK.selectedBridge
-        val size = bridge?.resourceCache?.allLights?.size ?: return false
 
-        for (i in 0..size - 1) {
-            val lightState = changeForCIE(bulb.bulbs[i], bridge.resourceCache.allLights[i].modelNumber)
-//            var color = 0
-//            when(i) {
-//                0 -> color = 0xff0000
-//                1 -> color = 0x8f9022
-//                2 -> color = 0xb83b00
-//            }
-//            val lightState = changeRGBToCIE(color, bridge.resourceCache.allLights[i].modelNumber)
+        for (i in 0..levelCreator.bulbCount - 1) {
+            val lightState = convertRGBtoCIE(bulb.bulbs[i], bridge.resourceCache.allLights[i].modelNumber)
 //            val lightState = changeForHsv(hues, i)
-
+            lightState.colorMode = PHLight.PHLightColorMode.COLORMODE_XY
             lightState.isOn = true
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
 
@@ -84,7 +76,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         return true
     }
 
-    private fun changeForCIE(stage: BulbColor, modelNumber: String): PHLightState {
+    private fun convertRGBtoCIE(stage: BulbColor, modelNumber: String): PHLightState {
         val xy = colorConverter.toXY(stage.R, stage.G, stage.B, modelNumber);
         val lightState = PHLightState()
         lightState.x = xy[0]
@@ -92,20 +84,12 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         return lightState
     }
 
-    private fun changeForHsv(bulb: Bulb, i: Int): PHLightState {
+    private fun convertRGBtoHsv(bulb: Bulb, i: Int): PHLightState {
         val lightState = PHLightState()
         val hsv = bulb.bulbs[i].toHSV()
         lightState.hue = hsv[0].toInt()
         lightState.saturation = hsv[1].toInt()
         lightState.brightness = hsv[2].toInt()
-        return lightState
-    }
-
-    private fun changeRGBToCIE(rgb: Int, modelNumber: String): PHLightState {
-        val xy = colorConverter.toXY(Color.red(rgb), Color.blue(rgb), Color.green(rgb), modelNumber);
-        val lightState = PHLightState()
-        lightState.x = xy[0]
-        lightState.y = xy[1]
         return lightState
     }
 

@@ -29,7 +29,12 @@ class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelN
 
     val rand = Random()
 
+    // stage는 1부터 시작.
     override fun create(stage: Int): Array<BulbColor> {
+        if (stage == 1) {
+            return createCalibrationBulb()
+        }
+
         val min = createMinimumValue(stage)
 
         val r = createRandomValueGreaterThanMin(min, rand)
@@ -38,6 +43,14 @@ class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelN
 
         val bulbs = Array(bulbCount, { BulbColor(r, g, b)})
         bulbs[r % bulbCount] = createSpecialBulbColor(bulbs[0], stage)
+        return bulbs
+    }
+
+    private fun createCalibrationBulb(): Array<BulbColor> {
+        val bulbs = Array(bulbCount, { BulbColor(0, 0, 0)})
+        bulbs[0] = BulbColor(255, 0, 0)
+        bulbs[1] = BulbColor(0, 255, 0)
+        bulbs[2] = BulbColor(0, 0, 255)
         return bulbs
     }
 
@@ -54,14 +67,45 @@ class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelN
         }
     }
 
-    private fun createSpecialBulbColor(bulbColor: BulbColor, stage: Int): BulbColor {
-        val xy = colorConverter.toXY(bulbColor.R, bulbColor.G, bulbColor.B, modelNumber)
-        val x2 = (gamutCenterX * 2) - (xy[0] / stage)
-        val y2 = (gamutCenterY * 2) - (xy[1] / stage)
-        val newXY = FloatArray(2)
-        newXY[0] = x2
-        newXY[1] = y2
+    //    private fun createSpecialBulbColor(bulbColor: BulbColor, stage: Int): BulbColor {
+    //        val xy = colorConverter.toXY(bulbColor.R, bulbColor.G, bulbColor.B, modelNumber)
+    //        val x2 = (gamutCenterX * 2) - (xy[0] / stage)
+    //        val y2 = (gamutCenterY * 2) - (xy[1] / stage)
+    //        val newXY = FloatArray(2)
+    //        newXY[0] = x2
+    //        newXY[1] = y2
+    //
+    //        return colorConverter.toRGB(newXY, modelNumber)
+    //    }
 
-        return colorConverter.toRGB(newXY, modelNumber)
+    private fun createSpecialBulbColor(bulb: BulbColor, stage: Int): BulbColor {
+        val rgb = IntArray(3)
+        rgb[0] = bulb.R
+        rgb[1] = bulb.G
+        rgb[2] = bulb.B
+        // create special color
+        // n = color - color * (1/stage^2), inverse exponential,
+        var exponential: Double = 1.0 / (stage * stage)
+        if (exponential == 1.0) {
+            // 처음 값이 무조건 1이 나오는데 이때 편차가 너무 크므로 조금 줄임.
+            exponential = 0.8
+        }
+
+        if (stage / stageCount >= 0.3f) { // 3개 다 섞기
+
+        } else if (stage / stageCount >= 0.6f) { // 2개 섞기
+
+        } else { // 1개 값 변경
+
+        }
+
+        return BulbColor(
+                (rgb[0] - rgb[0] * exponential).toInt(),
+                (rgb[1] - rgb[1] * exponential).toInt(),
+                (rgb[2] - rgb[2] * exponential).toInt())
+    }
+
+    private fun shuffle(rgb: IntArray, mode: Int) {
+
     }
 }

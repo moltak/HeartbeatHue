@@ -41,6 +41,6 @@ class CieOppositeXyColorCreatorTest {
 
     @Test
     fun shouldHasOppositeValue() {
-        val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator(3, 20, "LCT001"))
+        val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator())
     }
 }
