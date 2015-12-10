@@ -79,7 +79,7 @@ class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelN
     //    }
 
     private fun createSpecialBulbColor(bulb: BulbColor, stage: Int): BulbColor {
-        val rgb = IntArray(3)
+        var rgb = IntArray(3)
         rgb[0] = bulb.R
         rgb[1] = bulb.G
         rgb[2] = bulb.B
@@ -92,11 +92,11 @@ class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelN
         }
 
         if (stage / stageCount >= 0.3f) { // 3개 다 섞기
-
+            rgb = shuffle3(rgb)
         } else if (stage / stageCount >= 0.6f) { // 2개 섞기
-
-        } else { // 1개 값 변경
-
+            rgb = shuffle2(rgb)
+        } else if (stage / stageCount >= 0.8f){ // 1개 값 변경
+            rgb = shuffle1(rgb)
         }
 
         return BulbColor(
@@ -105,7 +105,28 @@ class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelN
                 (rgb[2] - rgb[2] * exponential).toInt())
     }
 
-    private fun shuffle(rgb: IntArray, mode: Int) {
+    private fun shuffle3(rgb: IntArray): IntArray {
+        var rgbTemp = IntArray(3)
+        rgbTemp[0] = rgb[1]
+        rgbTemp[1] = rgb[2]
+        rgbTemp[2] = rgb[0]
+        return rgbTemp
+    }
 
+    private fun shuffle2(rgb: IntArray): IntArray {
+        var rgbTemp = IntArray(3)
+        rgbTemp[0] = rgb[0]
+        rgbTemp[1] = rgb[2]
+        rgbTemp[2] = rgb[1]
+        return rgbTemp
+    }
+
+    private fun shuffle1(rgb: IntArray): IntArray {
+        var rgbTemp = IntArray(3)
+        rgbTemp[0] = rgb[0]
+        rgbTemp[1] = rgb[1]
+        rgbTemp[2] = rgb[2]
+        rgbTemp[2] = ((rgbTemp[0] + rgbTemp[1] + rgbTemp[2]).toDouble() % MAX_COLOR).toInt()
+        return rgbTemp
     }
 }
