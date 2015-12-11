@@ -13,13 +13,14 @@ import com.philips.lighting.model.PHHueError
 import net.moltak.heartbeathue.library.bindView
 import net.moltak.heartbeathue.logic.*
 import net.moltak.heartbeathue.logic.color.CieOppositeXyColorCreator
+import net.moltak.heartbeathue.logic.color.PartialColorBlindnessCreator
 
 public class MainActivity : AppCompatActivity() {
 
     private var hueController: HueController? = null
     private var hueCount = 0
 
-    private val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator())
+    private val levelCreator = LevelCreator(colorCreator = PartialColorBlindnessCreator())
     private val textView: TextView by bindView(R.id.textView)
     private val button1: Button by bindView(R.id.button1)
     private val button2: Button by bindView(R.id.button2)

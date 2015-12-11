@@ -64,7 +64,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         val resource = bridge?.resourceCache?.allLights ?: return false
 
         for (i in 0..levelCreator.bulbCount - 1) {
-            val lightState = convertRGBtoCIE(bulb.bulbs[i], bridge.resourceCache.allLights[i].modelNumber)
+            val lightState = convertRGBtoCIE(bulb.bulbs[i], resource[i].modelNumber)
 //            val lightState = changeForHsv(hues, i)
             lightState.colorMode = PHLight.PHLightColorMode.COLORMODE_XY
             lightState.isOn = true

@@ -9,13 +9,13 @@ class PartialColorBlindnessCreator : SpecialColorCreator {
     override val bulbCount: Int = 3
     override val stageCount: Int = 8
 
+    // stage가 1부터 들어옴.
     override fun create(stage: Int): Array<BulbColor> {
         val bubls = Array(bulbCount, { BulbColor(0, 0, 0) })
 
         for (i in 0..bulbCount - 1) {
-            val bulb = getBulbColor(i, stage)
+            val bulb = getBulbColor(i, stage - 1)
             bubls.set(i, bulb)
-            println("Stage=$stage, type=$i   -> R=${bulb.R}  G=${bulb.G}  B=${bulb.B}")
         }
 
         return bubls
