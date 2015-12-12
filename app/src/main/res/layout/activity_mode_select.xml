@@ -3,4 +3,21 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:id="@+id/buttonStage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stage" />
+
+    <Button
+        android:id="@+id/buttonTimeAttack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Time attack" />
+
+    <Button
+        android:id="@+id/buttonColorBlindness"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Color blindness" />
 </LinearLayout>

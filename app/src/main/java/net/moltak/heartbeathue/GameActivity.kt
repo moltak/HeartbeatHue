@@ -15,7 +15,7 @@ import net.moltak.heartbeathue.logic.*
 import net.moltak.heartbeathue.logic.color.CieOppositeXyColorCreator
 import net.moltak.heartbeathue.logic.color.PartialColorBlindnessCreator
 
-public class MainActivity : AppCompatActivity() {
+public class GameActivity : AppCompatActivity() {
 
     private var hueController: HueController? = null
     private var hueCount = 0
@@ -28,7 +28,7 @@ public class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_stage)
+        setContentView(R.layout.activity_game)
         ButterKnife.bind(this)
 
         hueController = HueController(HueSharedPreferences.getInstance(this), listener, levelCreator)
