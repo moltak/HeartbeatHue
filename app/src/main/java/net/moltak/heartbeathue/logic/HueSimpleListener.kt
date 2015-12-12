@@ -18,7 +18,7 @@ open class HueSimpleListener : PHSDKListener {
 
     override fun onAccessPointsFound(list: List<PHAccessPoint>) { }
 
-    override fun onError(i: Int, s: String) { }
+    override fun onError(code: Int, msg: String) { }
 
     override fun onConnectionResumed(phBridge: PHBridge) { }
 

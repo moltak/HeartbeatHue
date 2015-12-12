@@ -16,19 +16,18 @@ class HueSharedPreferences private constructor(appContext: Context) {
         mSharedPreferencesEditor = mSharedPreferences!!.edit()
     }
 
-    val username: String
-        get() {
-            val username = mSharedPreferences!!.getString(LAST_CONNECTED_USERNAME, "")
-            return username
-        }
+    fun getUserName(): String {
+        return mSharedPreferences!!.getString(LAST_CONNECTED_USERNAME, "")
+    }
 
     fun setUsername(username: String) {
         mSharedPreferencesEditor!!.putString(LAST_CONNECTED_USERNAME, username)
         mSharedPreferencesEditor!!.apply()
     }
 
-    val lastConnectedIPAddress: String
-        get() = mSharedPreferences!!.getString(LAST_CONNECTED_IP, "")
+    fun getLastConnectedIpAddress(): String {
+        return mSharedPreferences!!.getString(LAST_CONNECTED_IP, "")
+    }
 
     fun setLastConnectedIPAddress(ipAddress: String) {
         mSharedPreferencesEditor!!.putString(LAST_CONNECTED_IP, ipAddress)
@@ -41,9 +40,9 @@ class HueSharedPreferences private constructor(appContext: Context) {
         private val LAST_CONNECTED_IP = "LastConnectedIP"
         private var instance: HueSharedPreferences? = null
 
-        fun getInstance(ctx: Context): HueSharedPreferences {
+        fun getInstance(context: Context): HueSharedPreferences {
             if (instance == null) {
-                instance = HueSharedPreferences(ctx)
+                instance = HueSharedPreferences(context)
             }
             return instance as HueSharedPreferences
         }

@@ -10,7 +10,7 @@ import com.philips.lighting.model.PHLight
  */
 
 open class HueLightSimpleListener : PHLightListener {
-    override fun onError(p0: Int, p1: String?) { }
+    override fun onError(code: Int, msg: String?) { }
 
     override fun onStateUpdate(p0: MutableMap<String, String>?, p1: MutableList<PHHueError>?) { }
 
