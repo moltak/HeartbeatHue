@@ -20,7 +20,7 @@ public class GameActivity : AppCompatActivity() {
 
     private var hueController: HueController? = null
     private var hueCount = 0
-    var levelCreator: LevelCreator = null!!
+    var levelCreator: LevelCreator? = null
 
     private val textView: TextView by bindView(R.id.textView)
     private val button1: Button by bindView(R.id.button1)
@@ -34,7 +34,7 @@ public class GameActivity : AppCompatActivity() {
 
         levelCreator = LevelCreator(createLevelCreator())
 
-        hueController = HueController(HueSharedPreferences.getInstance(this), listener, levelCreator)
+        hueController = HueController(HueSharedPreferences.getInstance(this), listener, levelCreator!!)
         if (hueController?.connectToLastAccessPoint() == false) {
             hueController?.searchBridge()
         }
@@ -91,15 +91,15 @@ public class GameActivity : AppCompatActivity() {
 
     @OnClick(R.id.buttonChangeColor)
     public fun onChangeColorButtonClicked() {
-        if (hueController?.changeTheColor(levelCreator.stages[hueCount]) ?: false) {
+        if (hueController?.changeTheColor(levelCreator!!.stages[hueCount]) ?: false) {
             textView.text = "Stage: -> ${hueCount + 1}, color changed!"
         } else {
             textView.text = "Stage: -> ${hueCount + 1}, color fail!"
         }
 
-        changeButtonColor(levelCreator.stages[hueCount])
+        changeButtonColor(levelCreator!!.stages[hueCount])
 
-        if (hueCount == levelCreator.stageCount - 1) hueCount = 0
+        if (hueCount == levelCreator!!.stageCount - 1) hueCount = 0
         else hueCount ++
 
     }
