@@ -14,13 +14,14 @@ import net.moltak.heartbeathue.library.bindView
 import net.moltak.heartbeathue.logic.*
 import net.moltak.heartbeathue.logic.color.CieOppositeXyColorCreator
 import net.moltak.heartbeathue.logic.color.PartialColorBlindnessCreator
+import net.moltak.heartbeathue.logic.color.SpecialColorCreator
 
 public class GameActivity : AppCompatActivity() {
 
     private var hueController: HueController? = null
     private var hueCount = 0
+    var levelCreator: LevelCreator = null!!
 
-    private val levelCreator = LevelCreator(colorCreator = PartialColorBlindnessCreator())
     private val textView: TextView by bindView(R.id.textView)
     private val button1: Button by bindView(R.id.button1)
     private val button2: Button by bindView(R.id.button2)
@@ -31,9 +32,18 @@ public class GameActivity : AppCompatActivity() {
         setContentView(R.layout.activity_game)
         ButterKnife.bind(this)
 
+        levelCreator = LevelCreator(createLevelCreator())
+
         hueController = HueController(HueSharedPreferences.getInstance(this), listener, levelCreator)
         if (hueController?.connectToLastAccessPoint() == false) {
             hueController?.searchBridge()
+        }
+    }
+
+    private fun createLevelCreator() : SpecialColorCreator {
+        when(intent.getIntExtra("mode", 0)) {
+            0 -> return CieOppositeXyColorCreator()
+            else -> return PartialColorBlindnessCreator()
         }
     }
 
