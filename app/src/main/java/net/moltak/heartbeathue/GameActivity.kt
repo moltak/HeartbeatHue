@@ -88,13 +88,13 @@ public class GameActivity : AppCompatActivity() {
 
         when(v!!.id) {
             R.id.button1 -> {
-                referring = gameReferee?.refereeing(0, stage)!!
+                referring = gameReferee?.refereeing(0, stage - 1)!!
             }
             R.id.button2 -> {
-                referring = gameReferee?.refereeing(1, stage)!!
+                referring = gameReferee?.refereeing(1, stage - 1)!!
             }
             else -> {
-                referring = gameReferee?.refereeing(2, stage)!!
+                referring = gameReferee?.refereeing(2, stage - 1)!!
             }
         }
 
