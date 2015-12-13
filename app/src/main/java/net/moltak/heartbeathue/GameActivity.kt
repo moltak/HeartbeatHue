@@ -13,6 +13,7 @@ import net.moltak.heartbeathue.logic.LevelCreator
 import net.moltak.heartbeathue.logic.color.StageModeColorCreator
 import net.moltak.heartbeathue.logic.color.PartialColorBlindnessCreator
 import net.moltak.heartbeathue.logic.color.SpecialColorCreator
+import net.moltak.heartbeathue.logic.color.TimeAttackModeColorCreator
 
 public class GameActivity : AppCompatActivity() {
 
@@ -43,7 +44,7 @@ public class GameActivity : AppCompatActivity() {
             }
             1 -> {
                 textView.text = "Time Attack mode"
-                return StageModeColorCreator()
+                return TimeAttackModeColorCreator()
             }
             else -> {
                 textView.text = "Color Blindness mode"
