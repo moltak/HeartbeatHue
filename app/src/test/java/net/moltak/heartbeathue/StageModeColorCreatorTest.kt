@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 /**
  * Created by moltak on 15. 12. 8..
  */
-class CieOppositeXyColorCreatorTest {
+class StageModeColorCreatorTest {
 
     @Test
     fun createorShouldReturnHueStages() {

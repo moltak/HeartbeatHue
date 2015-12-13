@@ -8,7 +8,7 @@ import java.util.*
  * Created by moltak on 15. 12. 8..
  * @link http://www.developers.meethue.com/documentation/supported-lights#colorTemperatureLight
  */
-class CieOppositeXyColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelNumber: String = "LCT001") : SpecialColorCreator {
+class StageModeColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelNumber: String = "LCT001") : SpecialColorCreator {
     override val bulbCount: Int
     override val stageCount: Int
     val modelNumber: String

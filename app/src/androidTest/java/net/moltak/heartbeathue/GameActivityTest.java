@@ -6,16 +6,14 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import net.moltak.heartbeathue.logic.LevelCreator;
-import net.moltak.heartbeathue.logic.color.CieOppositeXyColorCreator;
+import net.moltak.heartbeathue.logic.color.StageModeColorCreator;
 import net.moltak.heartbeathue.logic.color.PartialColorBlindnessCreator;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -53,7 +51,7 @@ public class GameActivityTest {
 
         GameActivity activity = mActivityRule.launchActivity(i);
         LevelCreator levelCreator = activity.getLevelCreator();
-        assertThat(levelCreator.getSpecialColorCreator(), instanceOf(CieOppositeXyColorCreator.class));
+        assertThat(levelCreator.getSpecialColorCreator(), instanceOf(StageModeColorCreator.class));
     }
 
     @Test

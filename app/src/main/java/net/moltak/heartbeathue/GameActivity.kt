@@ -10,7 +10,7 @@ import net.moltak.heartbeathue.library.bindView
 import net.moltak.heartbeathue.logic.Bulb
 import net.moltak.heartbeathue.logic.HueController
 import net.moltak.heartbeathue.logic.LevelCreator
-import net.moltak.heartbeathue.logic.color.CieOppositeXyColorCreator
+import net.moltak.heartbeathue.logic.color.StageModeColorCreator
 import net.moltak.heartbeathue.logic.color.PartialColorBlindnessCreator
 import net.moltak.heartbeathue.logic.color.SpecialColorCreator
 
@@ -37,8 +37,18 @@ public class GameActivity : AppCompatActivity() {
 
     private fun createLevelCreator() : SpecialColorCreator {
         when(intent.getIntExtra("mode", 0)) {
-            0 -> return CieOppositeXyColorCreator()
-            else -> return PartialColorBlindnessCreator()
+            0 -> {
+                textView.text = "Stage mode"
+                return StageModeColorCreator()
+            }
+            1 -> {
+                textView.text = "Time Attack mode"
+                return StageModeColorCreator()
+            }
+            else -> {
+                textView.text = "Color Blindness mode"
+                return PartialColorBlindnessCreator()
+            }
         }
     }
 
