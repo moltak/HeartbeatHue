@@ -84,14 +84,14 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         return lightState
     }
 
-    private fun convertRGBtoHsv(bulb: Bulb, i: Int): PHLightState {
-        val lightState = PHLightState()
-        val hsv = bulb.bulbs[i].toHSV()
-        lightState.hue = hsv[0].toInt()
-        lightState.saturation = hsv[1].toInt()
-        lightState.brightness = hsv[2].toInt()
-        return lightState
-    }
+//    private fun convertRGBtoHsv(bulb: Bulb, i: Int): PHLightState {
+//        val lightState = PHLightState()
+//        val hsv = bulb.bulbs[i].toHSV()
+//        lightState.hue = hsv[0].toInt()
+//        lightState.saturation = hsv[1].toInt()
+//        lightState.brightness = hsv[2].toInt()
+//        return lightState
+//    }
 
     fun searchBridge() {
         val sm: PHBridgeSearchManager = phHueSDK.getSDKService(PHHueSDK.SEARCH_BRIDGE) as PHBridgeSearchManager
