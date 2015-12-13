@@ -13,13 +13,13 @@ import net.moltak.heartbeathue.util.ColorConverter
 /**
  * Created by engeng on 12/1/15.
  */
-class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener: PHSDKListener,
-                    levelCreator: LevelCreator) {
+class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener: PHSDKListener) {
     private val phHueSDK: PHHueSDK
     private val sharedPreferences: HueSharedPreferences
     private val listener: PHSDKListener
-    private val levelCreator: LevelCreator
     private val colorConverter = ColorConverter()
+
+    var levelCreator: LevelCreator? = null
 
     private val TAG = "HUE_TAG"
     private val USERNAME = "HeartbeatHue"
@@ -27,7 +27,6 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     init {
         this.sharedPreferences = sharedPreferences
         this.listener = phdSdkPHSDKListener
-        this.levelCreator = levelCreator
 
         phHueSDK = PHHueSDK.create()
         phHueSDK.appName = "HeartbeatHue"
@@ -63,7 +62,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         val bridge = phHueSDK.selectedBridge
         val resource = bridge?.resourceCache?.allLights ?: return false
 
-        for (i in 0..levelCreator.bulbCount - 1) {
+        for (i in 0..levelCreator!!.bulbCount - 1) {
             val lightState = convertRGBtoCIE(bulb.bulbs[i], resource[i].modelNumber)
 //            val lightState = changeForHsv(hues, i)
             lightState.colorMode = PHLight.PHLightColorMode.COLORMODE_XY
