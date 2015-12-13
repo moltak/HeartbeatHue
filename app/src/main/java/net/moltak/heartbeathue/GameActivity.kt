@@ -18,7 +18,7 @@ import net.moltak.heartbeathue.logic.color.TimeAttackModeColorCreator
 public class GameActivity : AppCompatActivity() {
 
     private var hueController: HueController? = null
-    private var hueCount = 0
+    private var stage = 0
     var levelCreator: LevelCreator? = null
 
     private val textView: TextView by bindView(R.id.textView)
@@ -55,16 +55,16 @@ public class GameActivity : AppCompatActivity() {
 
     @OnClick(R.id.buttonChangeColor)
     public fun onChangeColorButtonClicked() {
-        if (hueController?.changeTheColor(levelCreator!!.stages[hueCount]) ?: false) {
-            textView.text = "Stage: -> ${hueCount + 1}, color changed!"
+        if (hueController?.changeTheColor(levelCreator!!.stages[stage]) ?: false) {
+            textView.text = "Stage: -> ${stage + 1}, color changed!"
         } else {
-            textView.text = "Stage: -> ${hueCount + 1}, color fail!"
+            textView.text = "Stage: -> ${stage + 1}, color fail!"
         }
 
-        changeButtonColor(levelCreator!!.stages[hueCount])
+        changeButtonColor(levelCreator!!.stages[stage])
 
-        if (hueCount == levelCreator!!.stageCount - 1) hueCount = 0
-        else hueCount ++
+        if (stage == levelCreator!!.stageCount - 1) stage = 0
+        else stage++
 
     }
 
