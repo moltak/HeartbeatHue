@@ -15,21 +15,23 @@ class GameReferee(levelCreator: LevelCreator) {
 
     fun refereeing(selectedIndex: Int, stage: Int) : Boolean {
         if (levelCreator.specialColorCreator is PartialColorBlindnessCreator) {
-            return partialReferee(selectedIndex, stage)
+            return partialColorBlindnessTestReferee(selectedIndex, stage)
         } else {
-            return referee(selectedIndex, stage)
+            return gameReferee(selectedIndex, stage)
         }
     }
 
-    private fun partialReferee(selectedIndex: Int, stage: Int): Boolean {
+    private fun partialColorBlindnessTestReferee(selectedIndex: Int, stage: Int): Boolean {
         return false
     }
 
-    private fun referee(selectedIndex: Int, stage: Int): Boolean {
+    private fun gameReferee(selectedIndex: Int, stage: Int): Boolean {
         val bulb = levelCreator.stages[stage]
 
         for (i in 0..levelCreator.bulbCount - 1) {
-            if (bulb.bulbs[i].toInt() != bulb.bulbs[selectedIndex].toInt()) {
+            if (i == selectedIndex) continue
+
+            if (bulb.bulbs[i].toInt() == bulb.bulbs[selectedIndex].toInt()) {
                 return false
             }
         }
