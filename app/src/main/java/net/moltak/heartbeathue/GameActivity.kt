@@ -42,6 +42,8 @@ public class GameActivity : AppCompatActivity() {
         button1.setOnClickListener(buttonSelect)
         button2.setOnClickListener(buttonSelect)
         button3.setOnClickListener(buttonSelect)
+
+        nextStage()
     }
 
     private fun createLevelCreator() : SpecialColorCreator {
@@ -68,26 +70,24 @@ public class GameActivity : AppCompatActivity() {
     }
 
     val buttonSelect = View.OnClickListener { v ->
-        if (stage != 0) {
-            var referring: Boolean
+        var referring: Boolean
 
-            when(v!!.id) {
-                R.id.button1 -> {
-                    referring = gameReferee?.refereeing(0, stage - 1)!!
-                }
-                R.id.button2 -> {
-                    referring = gameReferee?.refereeing(1, stage - 1)!!
-                }
-                else -> {
-                    referring = gameReferee?.refereeing(2, stage - 1)!!
-                }
+        when(v!!.id) {
+            R.id.button1 -> {
+                referring = gameReferee?.refereeing(0, stage - 1)!!
             }
+            R.id.button2 -> {
+                referring = gameReferee?.refereeing(1, stage - 1)!!
+            }
+            else -> {
+                referring = gameReferee?.refereeing(2, stage - 1)!!
+            }
+        }
 
-            if (referring) {
-                nextStage()
-            } else {
-                Toast.makeText(baseContext, "fail", Toast.LENGTH_SHORT).show()
-            }
+        if (referring) {
+            nextStage()
+        } else {
+            Toast.makeText(baseContext, "fail", Toast.LENGTH_SHORT).show()
         }
     }
 
