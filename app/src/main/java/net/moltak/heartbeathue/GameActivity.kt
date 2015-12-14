@@ -7,14 +7,13 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import butterknife.ButterKnife
-import butterknife.OnClick
 import net.moltak.heartbeathue.library.bindView
 import net.moltak.heartbeathue.logic.Bulb
 import net.moltak.heartbeathue.logic.HueController
 import net.moltak.heartbeathue.logic.LevelCreator
-import net.moltak.heartbeathue.logic.color.StageModeColorCreator
 import net.moltak.heartbeathue.logic.color.PartialColorBlindnessCreator
 import net.moltak.heartbeathue.logic.color.SpecialColorCreator
+import net.moltak.heartbeathue.logic.color.StageModeColorCreator
 import net.moltak.heartbeathue.logic.color.TimeAttackModeColorCreator
 import net.moltak.heartbeathue.logic.game.GameReferee
 
@@ -62,8 +61,37 @@ public class GameActivity : AppCompatActivity() {
         }
     }
 
-    @OnClick(R.id.buttonChangeColor)
-    public fun onChangeColorButtonClicked() {
+    private fun changeButtonColor(bulb: Bulb) {
+        button1.setBackgroundColor(bulb.bulbs[0].toInt() ?: android.R.color.black)
+        button2.setBackgroundColor(bulb.bulbs[1].toInt() ?: android.R.color.black)
+        button3.setBackgroundColor(bulb.bulbs[2].toInt() ?: android.R.color.black)
+    }
+
+    val buttonSelect = View.OnClickListener { v ->
+        if (stage != 0) {
+            var referring: Boolean
+
+            when(v!!.id) {
+                R.id.button1 -> {
+                    referring = gameReferee?.refereeing(0, stage - 1)!!
+                }
+                R.id.button2 -> {
+                    referring = gameReferee?.refereeing(1, stage - 1)!!
+                }
+                else -> {
+                    referring = gameReferee?.refereeing(2, stage - 1)!!
+                }
+            }
+
+            if (referring) {
+                nextStage()
+            } else {
+                Toast.makeText(baseContext, "fail", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun nextStage() {
         if (hueController?.changeTheColor(levelCreator!!.stages[stage]) ?: false) {
             textView.text = "Stage: -> ${stage + 1}, color changed!"
         } else {
@@ -74,31 +102,5 @@ public class GameActivity : AppCompatActivity() {
 
         if (stage == levelCreator!!.stageCount - 1) stage = 0
         else stage++
-
-    }
-
-    private fun changeButtonColor(bulb: Bulb) {
-        button1.setBackgroundColor(bulb.bulbs[0].toInt() ?: android.R.color.black)
-        button2.setBackgroundColor(bulb.bulbs[1].toInt() ?: android.R.color.black)
-        button3.setBackgroundColor(bulb.bulbs[2].toInt() ?: android.R.color.black)
-    }
-
-    val buttonSelect = View.OnClickListener { v ->
-        var referring: Boolean
-
-        when(v!!.id) {
-            R.id.button1 -> {
-                referring = gameReferee?.refereeing(0, stage - 1)!!
-            }
-            R.id.button2 -> {
-                referring = gameReferee?.refereeing(1, stage - 1)!!
-            }
-            else -> {
-                referring = gameReferee?.refereeing(2, stage - 1)!!
-            }
-        }
-
-        if (referring) Toast.makeText(baseContext, "success", Toast.LENGTH_SHORT).show()
-        else Toast.makeText(baseContext, "fail", Toast.LENGTH_SHORT).show()
     }
 }

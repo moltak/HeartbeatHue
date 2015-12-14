@@ -21,7 +21,7 @@ public fun <V : View> View.bindOptionalView(id: Int)
 public fun <V : View> Activity.bindOptionalView(id: Int)
         : ReadOnlyProperty<Activity, V?> = optional(id, viewFinder)
 public fun <V : View> Dialog.bindOptionalView(id: Int)
-        : ReadOnlyProperty<Diagilog, V?> = optional(id, viewFinder)
+        : ReadOnlyProperty<Dialog, V?> = optional(id, viewFinder)
 public fun <V : View> Fragment.bindOptionalView(id: Int)
         : ReadOnlyProperty<Fragment, V?> = optional(id, viewFinder)
 
