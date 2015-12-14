@@ -70,24 +70,20 @@ public class GameActivity : AppCompatActivity() {
     }
 
     val buttonSelect = View.OnClickListener { v ->
-        var referring: Boolean
+        var selected = selectedIndex(v)
 
-        when(v!!.id) {
-            R.id.button1 -> {
-                referring = gameReferee?.refereeing(0, stage - 1)!!
-            }
-            R.id.button2 -> {
-                referring = gameReferee?.refereeing(1, stage - 1)!!
-            }
-            else -> {
-                referring = gameReferee?.refereeing(2, stage - 1)!!
-            }
+        when (gameReferee?.refereeing(selected, stage - 1)!!) {
+            GameReferee.Result.NEXT -> nextStage()
+            GameReferee.Result.COMPLETE -> nextStage()
+            GameReferee.Result.GAME_OVER -> finish()
         }
+    }
 
-        if (referring) {
-            nextStage()
-        } else {
-            Toast.makeText(baseContext, "fail", Toast.LENGTH_SHORT).show()
+    private fun selectedIndex(v: View?): Int {
+        when (v!!.id) {
+            R.id.button1 -> return 0
+            R.id.button2 -> return 1
+            else -> return 2
         }
     }
 

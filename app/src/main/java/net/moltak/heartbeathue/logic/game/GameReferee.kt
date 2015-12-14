@@ -13,7 +13,7 @@ class GameReferee(levelCreator: LevelCreator) {
         this.levelCreator = levelCreator
     }
 
-    fun refereeing(selectedIndex: Int, stage: Int) : Boolean {
+    fun refereeing(selectedIndex: Int, stage: Int) : Result {
         if (levelCreator.specialColorCreator is PartialColorBlindnessCreator) {
             return partialColorBlindnessTestReferee(selectedIndex, stage)
         } else {
@@ -21,21 +21,33 @@ class GameReferee(levelCreator: LevelCreator) {
         }
     }
 
-    private fun partialColorBlindnessTestReferee(selectedIndex: Int, stage: Int): Boolean {
-        return false
+    private fun partialColorBlindnessTestReferee(selectedIndex: Int, stage: Int): Result {
+        if (stage == levelCreator.stageCount) {
+            return Result.COMPLETE
+        }
+
+        return Result.NEXT
     }
 
-    private fun gameReferee(selectedIndex: Int, stage: Int): Boolean {
+    private fun gameReferee(selectedIndex: Int, stage: Int): Result {
         val bulb = levelCreator.stages[stage]
 
         for (i in 0..levelCreator.bulbCount - 1) {
             if (i == selectedIndex) continue
 
             if (bulb.bulbs[i].toInt() == bulb.bulbs[selectedIndex].toInt()) {
-                return false
+                return Result.GAME_OVER
             }
         }
 
-        return true
+        if (stage == levelCreator.stageCount) {
+            return Result.COMPLETE
+        }
+
+        return Result.NEXT
+    }
+
+    enum class Result {
+        GAME_OVER, NEXT, COMPLETE
     }
 }
