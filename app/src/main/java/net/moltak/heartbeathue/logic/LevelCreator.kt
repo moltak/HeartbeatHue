@@ -22,8 +22,6 @@ class LevelCreator(colorCreator: SpecialColorCreator) {
         for (i in 1..this.stageCount) {
             var bulbs = colorCreator.create(i)
             stages.add(Bulb(bulbs))
-
-            println("Stage $i -> ${bulbs[0].toString()}  ${bulbs[1].toString()} ${bulbs[2].toString()}")
         }
     }
 }
