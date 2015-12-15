@@ -14,10 +14,10 @@ import net.moltak.heartbeathue.util.ColorConverter
  * Created by engeng on 12/1/15.
  */
 class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener: PHSDKListener) {
-    private val phHueSDK: PHHueSDK
-    private val sharedPreferences: HueSharedPreferences
-    private val listener: PHSDKListener
-    private val colorConverter = ColorConverter()
+    val phHueSDK: PHHueSDK
+    val sharedPreferences: HueSharedPreferences
+    val listener: PHSDKListener
+    val colorConverter = ColorConverter()
 
     var levelCreator: LevelCreator? = null
 
@@ -63,7 +63,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
         for (i in 0..levelCreator!!.bulbCount - 1) {
             val lightState = convertRGBtoCIE(bulb.bulbs[i], resource[i].modelNumber)
-//            val lightState = changeForHsv(hues, i)
+            //            val lightState = changeForHsv(hues, i)
             lightState.colorMode = PHLight.PHLightColorMode.COLORMODE_XY
             lightState.isOn = true
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
@@ -83,14 +83,14 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         return lightState
     }
 
-//    private fun convertRGBtoHsv(bulb: Bulb, i: Int): PHLightState {
-//        val lightState = PHLightState()
-//        val hsv = bulb.bulbs[i].toHSV()
-//        lightState.hue = hsv[0].toInt()
-//        lightState.saturation = hsv[1].toInt()
-//        lightState.brightness = hsv[2].toInt()
-//        return lightState
-//    }
+    //    private fun convertRGBtoHsv(bulb: Bulb, i: Int): PHLightState {
+    //        val lightState = PHLightState()
+    //        val hsv = bulb.bulbs[i].toHSV()
+    //        lightState.hue = hsv[0].toInt()
+    //        lightState.saturation = hsv[1].toInt()
+    //        lightState.brightness = hsv[2].toInt()
+    //        return lightState
+    //    }
 
     fun searchBridge() {
         val sm: PHBridgeSearchManager = phHueSDK.getSDKService(PHHueSDK.SEARCH_BRIDGE) as PHBridgeSearchManager
