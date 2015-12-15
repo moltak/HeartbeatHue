@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 /**
  * Created by engeng on 12/1/15.
  */
-class HueSharedPreferences private constructor(appContext: Context) {
+class HueSharedPreferences constructor(appContext: Context) {
     private var mSharedPreferences: SharedPreferences? = null
 
     private var mSharedPreferencesEditor: SharedPreferences.Editor? = null
