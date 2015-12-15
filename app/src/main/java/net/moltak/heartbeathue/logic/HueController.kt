@@ -5,10 +5,9 @@ import com.philips.lighting.hue.sdk.PHAccessPoint
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager
 import com.philips.lighting.hue.sdk.PHHueSDK
 import com.philips.lighting.hue.sdk.PHSDKListener
-import com.philips.lighting.hue.sdk.utilities.PHUtilities
-import com.philips.lighting.hue.sdk.utilities.impl.Color
 import com.philips.lighting.model.*
 import net.moltak.heartbeathue.util.ColorConverter
+import java.util.*
 
 /**
  * Created by engeng on 12/1/15.
@@ -16,7 +15,7 @@ import net.moltak.heartbeathue.util.ColorConverter
 class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener: PHSDKListener) {
     val phHueSDK: PHHueSDK
     val sharedPreferences: HueSharedPreferences
-    val listener: PHSDKListener
+    val listeners: MutableList<PHSDKListener> = ArrayList()
     val colorConverter = ColorConverter()
 
     var levelCreator: LevelCreator? = null
@@ -25,7 +24,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
     init {
         this.sharedPreferences = sharedPreferences
-        this.listener = phdSdkPHSDKListener
+        this.listeners.add(phdSdkPHSDKListener)
 
         phHueSDK = PHHueSDK.create()
         phHueSDK.appName = "HeartbeatHue"
@@ -53,7 +52,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     }
 
     fun disconnect() {
-        phHueSDK.notificationManager.unregisterSDKListener(listener);
+        phHueSDK.notificationManager.unregisterSDKListener(simpleListener);
         phHueSDK.disableAllHeartbeat();
     }
 
@@ -83,18 +82,13 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         return lightState
     }
 
-    //    private fun convertRGBtoHsv(bulb: Bulb, i: Int): PHLightState {
-    //        val lightState = PHLightState()
-    //        val hsv = bulb.bulbs[i].toHSV()
-    //        lightState.hue = hsv[0].toInt()
-    //        lightState.saturation = hsv[1].toInt()
-    //        lightState.brightness = hsv[2].toInt()
-    //        return lightState
-    //    }
-
     fun searchBridge() {
         val sm: PHBridgeSearchManager = phHueSDK.getSDKService(PHHueSDK.SEARCH_BRIDGE) as PHBridgeSearchManager
         sm.search(true, true)
+    }
+
+    fun addListener(listener: PHSDKListener) {
+        listeners.add(listener)
     }
 
     private fun connectToAccessPoints(accessPoint: PHAccessPoint) {
@@ -112,13 +106,18 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     private val simpleListener = object : HueSimpleListener() {
         override fun onAccessPointsFound(list: List<PHAccessPoint>) {
             if (list.size > 0) connectToAccessPoints(list[0])
-            listener.onAccessPointsFound(list)
+
+            for (i in listeners) {
+                i.onAccessPointsFound(list)
+            }
         }
 
         override fun onCacheUpdated(list: List<Int>, phBridge: PHBridge) {
             Log.w(TAG, "On CacheUpdated")
 
-            listener.onCacheUpdated(list, phBridge)
+            for (i in listeners) {
+                i.onCacheUpdated(list, phBridge)
+            }
         }
 
         override fun onBridgeConnected(phBridge: PHBridge, userName: String) {
@@ -128,13 +127,17 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
             sharedPreferences.setLastConnectedIPAddress(phBridge.resourceCache.bridgeConfiguration.ipAddress)
             sharedPreferences.setUsername(userName)
 
-            listener.onBridgeConnected(phBridge, userName)
+            for (i in listeners) {
+                i.onBridgeConnected(phBridge, userName)
+            }
         }
 
         override fun onAuthenticationRequired(phAccessPoint: PHAccessPoint) {
             phHueSDK.startPushlinkAuthentication(phAccessPoint)
 
-            listener.onAuthenticationRequired(phAccessPoint)
+            for (i in listeners) {
+                i.onAuthenticationRequired(phAccessPoint)
+            }
         }
 
         override fun onConnectionResumed(phBridge: PHBridge) {
@@ -147,7 +150,9 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
                 }
             }
 
-            listener.onConnectionResumed(phBridge)
+            for (i in listeners) {
+                i.onConnectionResumed(phBridge)
+            }
         }
 
         override fun onConnectionLost(phAccessPoint: PHAccessPoint) {
@@ -156,12 +161,17 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
                 phHueSDK.disconnectedAccessPoint.add(phAccessPoint)
             }
 
-            listener.onConnectionLost(phAccessPoint)
+            for (i in listeners) {
+                i.onConnectionLost(phAccessPoint)
+            }
         }
 
         override fun onError(code: Int, msg: String) {
             Log.e(TAG, "on Error Called : $code : $msg");
-            listener.onError(code, msg)
+
+            for (i in listeners) {
+                i.onError(code, msg)
+            }
         }
 
         override fun onParsingErrors(list: List<PHHueParsingError>) {
@@ -169,7 +179,9 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
                 Log.e(TAG, "ParsingError: ${parsingError.message}")
             }
 
-            listener.onParsingErrors(list)
+            for (i in listeners) {
+                i.onParsingErrors(list)
+            }
         }
     }
 
