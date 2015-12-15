@@ -6,27 +6,26 @@ import com.philips.lighting.hue.sdk.PHBridgeSearchManager
 import com.philips.lighting.hue.sdk.PHHueSDK
 import com.philips.lighting.hue.sdk.PHSDKListener
 import com.philips.lighting.hue.sdk.utilities.PHUtilities
+import com.philips.lighting.hue.sdk.utilities.impl.Color
 import com.philips.lighting.model.*
 import net.moltak.heartbeathue.util.ColorConverter
 
 /**
  * Created by engeng on 12/1/15.
  */
-class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener: PHSDKListener,
-                    levelCreator: LevelCreator) {
+class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener: PHSDKListener) {
     private val phHueSDK: PHHueSDK
     private val sharedPreferences: HueSharedPreferences
     private val listener: PHSDKListener
-    private val levelCreator: LevelCreator
     private val colorConverter = ColorConverter()
 
+    var levelCreator: LevelCreator? = null
+
     private val TAG = "HUE_TAG"
-    private val USERNAME = "HeartbeatHue"
 
     init {
         this.sharedPreferences = sharedPreferences
         this.listener = phdSdkPHSDKListener
-        this.levelCreator = levelCreator
 
         phHueSDK = PHHueSDK.create()
         phHueSDK.appName = "HeartbeatHue"
@@ -58,13 +57,14 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         phHueSDK.disableAllHeartbeat();
     }
 
-    fun changeTheColor(hues: Hues): Boolean {
+    fun changeTheColor(bulb: Bulb): Boolean {
         val bridge = phHueSDK.selectedBridge
-        val size = bridge?.resourceCache?.allLights?.size ?: return false
+        val resource = bridge?.resourceCache?.allLights ?: return false
 
-        for (i in 0..size - 1) {
-            val lightState = changeForCIE(hues.stages[i], bridge.resourceCache.allLights[i].modelNumber)
+        for (i in 0..levelCreator!!.bulbCount - 1) {
+            val lightState = convertRGBtoCIE(bulb.bulbs[i], resource[i].modelNumber)
 //            val lightState = changeForHsv(hues, i)
+            lightState.colorMode = PHLight.PHLightColorMode.COLORMODE_XY
             lightState.isOn = true
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
 
@@ -75,7 +75,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         return true
     }
 
-    private fun changeForCIE(stage: HueStage, modelNumber: String): PHLightState {
+    private fun convertRGBtoCIE(stage: BulbColor, modelNumber: String): PHLightState {
         val xy = colorConverter.toXY(stage.R, stage.G, stage.B, modelNumber);
         val lightState = PHLightState()
         lightState.x = xy[0]
@@ -83,14 +83,14 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         return lightState
     }
 
-    private fun changeForHsv(hues: Hues, i: Int): PHLightState {
-        val lightState = PHLightState()
-        val hsv = hues.stages[i].toHSV()
-        lightState.hue = hsv[0].toInt()
-        lightState.saturation = hsv[1].toInt()
-        lightState.brightness = hsv[2].toInt()
-        return lightState
-    }
+//    private fun convertRGBtoHsv(bulb: Bulb, i: Int): PHLightState {
+//        val lightState = PHLightState()
+//        val hsv = bulb.bulbs[i].toHSV()
+//        lightState.hue = hsv[0].toInt()
+//        lightState.saturation = hsv[1].toInt()
+//        lightState.brightness = hsv[2].toInt()
+//        return lightState
+//    }
 
     fun searchBridge() {
         val sm: PHBridgeSearchManager = phHueSDK.getSDKService(PHHueSDK.SEARCH_BRIDGE) as PHBridgeSearchManager
@@ -121,14 +121,14 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
             listener.onCacheUpdated(list, phBridge)
         }
 
-        override fun onBridgeConnected(phBridge: PHBridge, s: String) {
+        override fun onBridgeConnected(phBridge: PHBridge, userName: String) {
             phHueSDK.selectedBridge = phBridge
             phHueSDK.enableHeartbeat(phBridge, PHHueSDK.HB_INTERVAL.toLong())
             phHueSDK.lastHeartbeat.put(phBridge.resourceCache.bridgeConfiguration.ipAddress, System.currentTimeMillis())
             sharedPreferences.setLastConnectedIPAddress(phBridge.resourceCache.bridgeConfiguration.ipAddress)
-            sharedPreferences.setUsername(USERNAME)
+            sharedPreferences.setUsername(userName)
 
-            listener.onBridgeConnected(phBridge, s)
+            listener.onBridgeConnected(phBridge, userName)
         }
 
         override fun onAuthenticationRequired(phAccessPoint: PHAccessPoint) {

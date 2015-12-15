@@ -52,12 +52,12 @@ class RBGtoCIExyConvertTest {
     }
 
     private fun stageColorToCIECovertTest() {
-        val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
+        val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator(3))
         val converter = ColorConverter()
 
-        for (i in 0..levelCreator.hueCount - 1) {
-            for (j in 0..levelCreator.hues[i].stages.size - 1) {
-                val stage = levelCreator.hues[i].stages[j]
+        for (i in 0..levelCreator.bulbCount - 1) {
+            for (j in 0..levelCreator.stages[i].bulbs.size - 1) {
+                val stage = levelCreator.stages[i].bulbs[j]
                 val xy = converter.toXY(stage.R, stage.G, stage.B, "LCT001")
 
                 assertTrue(xy[0] >= LESS_X, "The x is must be bigger than $LESS_X but x is ${xy[0]} i=$i, j=$j")

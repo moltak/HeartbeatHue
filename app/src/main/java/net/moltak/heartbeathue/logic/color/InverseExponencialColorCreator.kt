@@ -1,21 +1,22 @@
 package net.moltak.heartbeathue.logic.color
 
-import net.moltak.heartbeathue.logic.HueStage
+import net.moltak.heartbeathue.logic.BulbColor
 import java.util.*
 
 /**
  * Created by engeng on 12/6/15.
  */
-class InverseExponencialColorCreator : SpecialColorCreator {
-    override var hueCount: Int = 0
-        get() = field
-        set(value) {
-            field = value
-        }
-
+class InverseExponencialColorCreator(bulbCount: Int = 3, stageCount: Int = 20) : SpecialColorCreator {
+    override val bulbCount: Int
+    override val stageCount: Int
     val MAX_COLOR = 255
 
-    override fun create(stage: Int): Array<HueStage> {
+    init {
+        this.bulbCount = bulbCount
+        this.stageCount = stageCount
+    }
+
+    override fun create(stage: Int): Array<BulbColor> {
         val rand = Random()
         rand.setSeed(Date().time)
 
@@ -23,12 +24,12 @@ class InverseExponencialColorCreator : SpecialColorCreator {
         val g = rand.nextInt(MAX_COLOR)
         val b = rand.nextInt(MAX_COLOR)
 
-        var hueStages = Array(hueCount, { HueStage(r, g, b)})
-        hueStages[r % hueCount] = createSpecialHueColor(b, g, r, stage)
-        return hueStages
+        var bulbColors = Array(bulbCount, { BulbColor(r, g, b)})
+        bulbColors[r % bulbCount] = createSpecialBulbColor(b, g, r, stage)
+        return bulbColors
     }
 
-    private fun createSpecialHueColor(b: Int, g: Int, r: Int, stage: Int): HueStage {
+    private fun createSpecialBulbColor(b: Int, g: Int, r: Int, stage: Int): BulbColor {
         // create special color
         // n = color - color * (1/stage^2), inverse exponential,
         var exponential: Double = 1.0 / (stage * stage)
@@ -38,10 +39,10 @@ class InverseExponencialColorCreator : SpecialColorCreator {
         }
 
         //println("Stage $stage   -->  $exponential")
-        val specialHue = HueStage(
+        val specialBulbColor = BulbColor(
                 (r - r * exponential).toInt(),
                 (g - g * exponential).toInt(),
                 (b - b * exponential).toInt())
-        return specialHue
+        return specialBulbColor
     }
 }
