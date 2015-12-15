@@ -11,7 +11,7 @@ class PartialColorBlindnessCreator : SpecialColorCreator {
 
     // stage가 1부터 들어옴.
     override fun create(stage: Int): Array<BulbColor> {
-        return getBulbColor(stage)
+        return getBulbColor(stage - 1)
     }
 
     private fun getBulbColor(stage: Int): Array<BulbColor> {
@@ -133,7 +133,7 @@ class PartialColorBlindnessCreator : SpecialColorCreator {
                 array[2] = BulbColor(0x910000)
             }
             23 -> {
-                array[0] =  BulbColor(0x0000FF)
+                array[0] = BulbColor(0x0000FF)
                 array[1] = BulbColor(0x17174C)
                 array[2] = BulbColor(0x1212D3)
             }
