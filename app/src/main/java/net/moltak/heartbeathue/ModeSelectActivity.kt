@@ -29,11 +29,10 @@ class ModeSelectActivity : AppCompatActivity() {
         ButterKnife.bind(this)
 
         hueController = HueController(HueSharedPreferences.getInstance(this), listener)
+        (application as HueApplication).hueController = hueController
         if (hueController?.connectToLastAccessPoint() == false) {
             hueController?.searchBridge()
         }
-
-        (application as HueApplication).hueController = hueController
     }
 
     private val listener = object : HueSimpleListener() {

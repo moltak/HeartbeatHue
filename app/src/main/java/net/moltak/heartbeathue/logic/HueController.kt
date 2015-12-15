@@ -22,7 +22,6 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     var levelCreator: LevelCreator? = null
 
     private val TAG = "HUE_TAG"
-    private val USERNAME = "HeartbeatHue"
 
     init {
         this.sharedPreferences = sharedPreferences
@@ -122,14 +121,14 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
             listener.onCacheUpdated(list, phBridge)
         }
 
-        override fun onBridgeConnected(phBridge: PHBridge, s: String) {
+        override fun onBridgeConnected(phBridge: PHBridge, userName: String) {
             phHueSDK.selectedBridge = phBridge
             phHueSDK.enableHeartbeat(phBridge, PHHueSDK.HB_INTERVAL.toLong())
             phHueSDK.lastHeartbeat.put(phBridge.resourceCache.bridgeConfiguration.ipAddress, System.currentTimeMillis())
             sharedPreferences.setLastConnectedIPAddress(phBridge.resourceCache.bridgeConfiguration.ipAddress)
-            sharedPreferences.setUsername(USERNAME)
+            sharedPreferences.setUsername(userName)
 
-            listener.onBridgeConnected(phBridge, s)
+            listener.onBridgeConnected(phBridge, userName)
         }
 
         override fun onAuthenticationRequired(phAccessPoint: PHAccessPoint) {
