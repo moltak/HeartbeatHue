@@ -84,11 +84,6 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         return lightState
     }
 
-    fun searchBridge() {
-        val sm: PHBridgeSearchManager = phHueSDK.getSDKService(PHHueSDK.SEARCH_BRIDGE) as PHBridgeSearchManager
-        sm.search(true, true)
-    }
-
     private fun connectToAccessPoints(accessPoint: PHAccessPoint) {
         val connectedBridge: PHBridge? = phHueSDK.selectedBridge
 
