@@ -61,7 +61,9 @@ public class PHPushlinkActivity extends Activity {
         public void onAuthenticationRequired(PHAccessPoint arg0) {}
 
         @Override
-        public void onBridgeConnected(PHBridge bridge, String username) {}
+        public void onBridgeConnected(PHBridge bridge, String username) {
+            finish();
+        }
 
         @Override
         public void onCacheUpdated(List<Integer> arg0, PHBridge bridge) {}
@@ -115,5 +117,4 @@ public class PHPushlinkActivity extends Activity {
             phHueSDK.getNotificationManager().unregisterSDKListener(listener);
         }
     }
-    
 }

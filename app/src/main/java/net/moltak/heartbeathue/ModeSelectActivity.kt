@@ -31,7 +31,7 @@ class ModeSelectActivity : AppCompatActivity() {
         hueController = HueController(HueSharedPreferences.getInstance(this), listener)
         (application as HueApplication).hueController = hueController
         if (hueController?.connectToLastAccessPoint() == false) {
-            hueController?.searchBridge()
+            startActivity(Intent(this, PHHomeActivity::class.java))
         }
     }
 
@@ -63,7 +63,6 @@ class ModeSelectActivity : AppCompatActivity() {
                 PHMessageType.PUSHLINK_AUTHENTICATION_FAILED -> changeText("Authentication Failed")
                 PHHueError.BRIDGE_NOT_RESPONDING -> changeText("Bridge Not Responding...")
                 PHMessageType.BRIDGE_NOT_FOUND -> changeText("Bridge Not Found")
-                else -> changeText("on Error Called : $code : $msg")
             }
         }
     }

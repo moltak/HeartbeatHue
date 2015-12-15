@@ -1,5 +1,6 @@
 package net.moltak.heartbeathue.logic
 
+import android.text.TextUtils
 import android.util.Log
 import com.philips.lighting.hue.sdk.PHAccessPoint
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager
@@ -7,7 +8,6 @@ import com.philips.lighting.hue.sdk.PHHueSDK
 import com.philips.lighting.hue.sdk.PHSDKListener
 import com.philips.lighting.model.*
 import net.moltak.heartbeathue.util.ColorConverter
-import java.util.*
 
 /**
  * Created by engeng on 12/1/15.
@@ -15,7 +15,7 @@ import java.util.*
 class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener: PHSDKListener) {
     val phHueSDK: PHHueSDK
     val sharedPreferences: HueSharedPreferences
-    val listeners: MutableList<PHSDKListener> = ArrayList()
+    val listener: PHSDKListener
     val colorConverter = ColorConverter()
 
     var levelCreator: LevelCreator? = null
@@ -24,7 +24,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
     init {
         this.sharedPreferences = sharedPreferences
-        this.listeners.add(phdSdkPHSDKListener)
+        this.listener = phdSdkPHSDKListener
 
         phHueSDK = PHHueSDK.create()
         phHueSDK.appName = "HeartbeatHue"
@@ -37,7 +37,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         val userName = sharedPreferences.getUserName()
         val lastIpAddress = sharedPreferences.getLastConnectedIpAddress()
 
-        if (!userName.equals("") && !lastIpAddress.equals("")) {
+        if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(lastIpAddress)) {
             val lastAccessPoint = PHAccessPoint();
             lastAccessPoint.username = userName
             lastAccessPoint.ipAddress = lastIpAddress
@@ -87,10 +87,6 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         sm.search(true, true)
     }
 
-    fun addListener(listener: PHSDKListener) {
-        listeners.add(listener)
-    }
-
     private fun connectToAccessPoints(accessPoint: PHAccessPoint) {
         val connectedBridge: PHBridge? = phHueSDK.selectedBridge
 
@@ -107,17 +103,12 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         override fun onAccessPointsFound(list: List<PHAccessPoint>) {
             if (list.size > 0) connectToAccessPoints(list[0])
 
-            for (i in listeners) {
-                i.onAccessPointsFound(list)
-            }
+            listener.onAccessPointsFound(list)
         }
 
         override fun onCacheUpdated(list: List<Int>, phBridge: PHBridge) {
             Log.w(TAG, "On CacheUpdated")
-
-            for (i in listeners) {
-                i.onCacheUpdated(list, phBridge)
-            }
+            listener.onCacheUpdated(list, phBridge)
         }
 
         override fun onBridgeConnected(phBridge: PHBridge, userName: String) {
@@ -127,17 +118,13 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
             sharedPreferences.setLastConnectedIPAddress(phBridge.resourceCache.bridgeConfiguration.ipAddress)
             sharedPreferences.setUsername(userName)
 
-            for (i in listeners) {
-                i.onBridgeConnected(phBridge, userName)
-            }
+            listener.onBridgeConnected(phBridge, userName)
         }
 
         override fun onAuthenticationRequired(phAccessPoint: PHAccessPoint) {
             phHueSDK.startPushlinkAuthentication(phAccessPoint)
 
-            for (i in listeners) {
-                i.onAuthenticationRequired(phAccessPoint)
-            }
+            listener.onAuthenticationRequired(phAccessPoint)
         }
 
         override fun onConnectionResumed(phBridge: PHBridge) {
@@ -150,9 +137,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
                 }
             }
 
-            for (i in listeners) {
-                i.onConnectionResumed(phBridge)
-            }
+            listener.onConnectionResumed(phBridge)
         }
 
         override fun onConnectionLost(phAccessPoint: PHAccessPoint) {
@@ -161,17 +146,11 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
                 phHueSDK.disconnectedAccessPoint.add(phAccessPoint)
             }
 
-            for (i in listeners) {
-                i.onConnectionLost(phAccessPoint)
-            }
+            listener.onConnectionLost(phAccessPoint)
         }
 
         override fun onError(code: Int, msg: String) {
-            Log.e(TAG, "on Error Called : $code : $msg");
-
-            for (i in listeners) {
-                i.onError(code, msg)
-            }
+            listener.onError(code, msg)
         }
 
         override fun onParsingErrors(list: List<PHHueParsingError>) {
@@ -179,9 +158,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
                 Log.e(TAG, "ParsingError: ${parsingError.message}")
             }
 
-            for (i in listeners) {
-                i.onParsingErrors(list)
-            }
+            listener.onParsingErrors(list)
         }
     }
 

@@ -53,8 +53,7 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
 
         HueController hueController = ((HueApplication) getApplication()).getHueController();
         phHueSDK = hueController.getPhHueSDK();
-        // Register the PHSDKListener to receive callbacks from the bridge.
-        hueController.addListener(listener);
+        phHueSDK.getNotificationManager().registerSDKListener(listener);
         adapter = new AccessPointListAdapter(getApplicationContext(), phHueSDK.getAccessPointsFound());
 
         ListView accessPointList = (ListView) findViewById(R.id.bridge_list);
@@ -65,6 +64,7 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
         prefs = new HueSharedPreferences(this);
         doBridgeSearch();
     }
+
 
     // Local SDK Listener
     private PHSDKListener listener = new PHSDKListener() {
@@ -189,8 +189,9 @@ public class PHHomeActivity extends Activity implements OnItemClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (listener !=null) {
-            phHueSDK.getNotificationManager().unregisterSDKListener(listener);
+        if (listener != null) {
+            HueController hueController = ((HueApplication) getApplication()).getHueController();
+            hueController.getPhHueSDK().getNotificationManager().unregisterSDKListener(listener);
         }
         phHueSDK.disableAllHeartbeat();
     }
