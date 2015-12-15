@@ -6,6 +6,7 @@ import com.philips.lighting.hue.sdk.PHAccessPoint
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager
 import com.philips.lighting.hue.sdk.PHHueSDK
 import com.philips.lighting.hue.sdk.PHSDKListener
+import com.philips.lighting.hue.sdk.utilities.impl.Color
 import com.philips.lighting.model.*
 import net.moltak.heartbeathue.util.ColorConverter
 
@@ -62,13 +63,14 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
         for (i in 0..levelCreator!!.bulbCount - 1) {
             val lightState = convertRGBtoCIE(bulb.bulbs[i], resource[i].modelNumber)
-            //            val lightState = changeForHsv(hues, i)
             lightState.colorMode = PHLight.PHLightColorMode.COLORMODE_XY
             lightState.isOn = true
+            lightState.brightness = (Color.brightness(bulb.bulbs[i].toInt()!!) * 255).toInt()
+            if (lightState.brightness >= 255) lightState.brightness = 254
             bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
 
-            Log.d(TAG, "   $i -> ${lightState.hue}, x = ${lightState.x}, y = ${lightState.y}, " +
-                    "${lightState.validateState()}")
+            Log.d(TAG, "   $i RGB -> ${bulb.bulbs[i].toInt()}, x = ${lightState.x}, y = ${lightState.y}, " +
+                    "${lightState.validateState()}, brightness = ${lightState.brightness}")
         }
 
         return true
