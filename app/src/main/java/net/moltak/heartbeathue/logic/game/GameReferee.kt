@@ -8,6 +8,8 @@ import net.moltak.heartbeathue.logic.color.PartialColorBlindnessCreator
  */
 class GameReferee(levelCreator: LevelCreator) {
     val levelCreator: LevelCreator
+    val blindnessReferee = ColorBlindnessReferee()
+    var colorBlindnessResult: ColorBlindnessReferee.ColorBlindType? = null
 
     init {
         this.levelCreator = levelCreator
@@ -23,9 +25,11 @@ class GameReferee(levelCreator: LevelCreator) {
 
     private fun partialColorBlindnessTestReferee(selectedIndex: Int, stage: Int): Result {
         if (stage == levelCreator.stageCount) {
+            colorBlindnessResult = blindnessReferee.testResult
             return Result.COMPLETE
         }
 
+        blindnessReferee.choice(selectedIndex)
         return Result.NEXT
     }
 

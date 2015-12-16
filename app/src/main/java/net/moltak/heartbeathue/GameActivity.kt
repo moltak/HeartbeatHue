@@ -15,6 +15,7 @@ import net.moltak.heartbeathue.logic.color.PartialColorBlindnessCreator
 import net.moltak.heartbeathue.logic.color.SpecialColorCreator
 import net.moltak.heartbeathue.logic.color.StageModeColorCreator
 import net.moltak.heartbeathue.logic.color.TimeAttackModeColorCreator
+import net.moltak.heartbeathue.logic.game.ColorBlindnessReferee
 import net.moltak.heartbeathue.logic.game.GameReferee
 
 public class GameActivity : AppCompatActivity() {
@@ -74,7 +75,7 @@ public class GameActivity : AppCompatActivity() {
 
         when (gameReferee?.refereeing(selected, stage - 1)!!) {
             GameReferee.Result.NEXT -> nextStage()
-            GameReferee.Result.COMPLETE -> nextStage()
+            GameReferee.Result.COMPLETE -> showResult()
             GameReferee.Result.GAME_OVER -> finish()
         }
     }
@@ -98,5 +99,20 @@ public class GameActivity : AppCompatActivity() {
 
         if (stage == levelCreator!!.stageCount - 1) stage = 0
         else stage++
+    }
+
+    private fun showResult() {
+        if (levelCreator!!.specialColorCreator is PartialColorBlindnessCreator) {
+            showColorBlindnessTestResult()
+        }
+    }
+
+    private fun showColorBlindnessTestResult() {
+        when (gameReferee!!.colorBlindnessResult) {
+            ColorBlindnessReferee.ColorBlindType.PROTANOPIA -> return// 제1색맹 : 적색맹
+            ColorBlindnessReferee.ColorBlindType.DEUTERANOPIA -> return // 제2색맹 : 녹색맹
+            ColorBlindnessReferee.ColorBlindType.ACHROMAOPSIA -> return // 전색맹
+            ColorBlindnessReferee.ColorBlindType.NORMAL -> return // 정
+        }
     }
 }
