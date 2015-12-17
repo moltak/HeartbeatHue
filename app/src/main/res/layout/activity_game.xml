@@ -39,15 +39,4 @@
             android:textSize="30dp"
             android:text="3"/>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/textViewCountDown"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:text="STAGE: "
-        android:gravity="center_vertical"
-        android:background="#26c7db"
-        android:visibility="gone"/>
 </RelativeLayout>

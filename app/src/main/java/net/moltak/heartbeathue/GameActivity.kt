@@ -29,7 +29,6 @@ public class GameActivity : AppCompatActivity() {
     private val button1: Button by bindView(R.id.button1)
     private val button2: Button by bindView(R.id.button2)
     private val button3: Button by bindView(R.id.button3)
-    private val textViewCountDown: TextView by bindView(R.id.textViewCountDown)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +50,6 @@ public class GameActivity : AppCompatActivity() {
     private fun createLevelCreator() : SpecialColorCreator {
         when(intent.getIntExtra("mode", 0)) {
             0 -> {
-                textViewCountDown.visibility = View.VISIBLE
                 return StageModeColorCreator(stageCount = 10)
             }
             1 -> {
@@ -94,7 +92,7 @@ public class GameActivity : AppCompatActivity() {
         hueController?.changeTheColor(levelCreator!!.stages[stage])
         changeButtonColor(levelCreator!!.stages[stage])
         if (levelCreator!!.specialColorCreator is StageModeColorCreator) {
-            textViewCountDown.text = "Stage: $stage"
+            supportActionBar.title = "Stage: $stage"
         }
     }
 
