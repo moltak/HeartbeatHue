@@ -72,10 +72,10 @@ public class GameActivity : AppCompatActivity() {
         timeAttackProgress.progressColor = Color.parseColor("#f44336")
         timeAttackProgress.setBackgroundColor(Color.parseColor("#808080"))
         timeAttackProgress.max = 60.0f
-        timeAttackProgress.progress = 58.2f
+        timeAttackProgress.progress = 60.2f
         timeAttackProgress.padding = 0
         timeAttackProgress.radius = 0
-        textViewCountDown.text = "${timeAttackProgress.progress}/60"
+        textViewCountDown.text = "${timeAttackProgress.progress}/${timeAttackProgress.max}"
         supportActionBar.hide()
     }
 
