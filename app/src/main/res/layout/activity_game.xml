@@ -46,13 +46,8 @@
         android:layout_height="40dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:textSize="18dp"
         android:text="STAGE: "
-        android:gravity="center"/>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="#26c7db"
         android:visibility="gone"/>
 </RelativeLayout>
