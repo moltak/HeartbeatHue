@@ -5,7 +5,7 @@ import net.moltak.heartbeathue.logic.BulbColor
 /**
  * Created by moltak on 15. 12. 13..
  */
-class TimeAttackModeColorCreator(bulbCount: Int = 3, stageCount: Int = 20, fakeStage: Int = 15) : SpecialColorCreator {
+class TimeAttackModeColorCreator(bulbCount: Int = 3, stageCount: Int = 20) : SpecialColorCreator {
     override val bulbCount: Int
     override val stageCount: Int
     val stageColorCreator = StageModeColorCreator()
@@ -14,7 +14,7 @@ class TimeAttackModeColorCreator(bulbCount: Int = 3, stageCount: Int = 20, fakeS
     init {
         this.bulbCount = bulbCount
         this.stageCount = stageCount
-        this.fakeStage = fakeStage
+        this.fakeStage = (stageCount * 0.8f).toInt()
     }
 
     // stage는 1부터 시작.

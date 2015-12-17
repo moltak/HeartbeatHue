@@ -45,7 +45,7 @@ class GameReferee(levelCreator: LevelCreator) {
             }
         }
 
-        if (stage == levelCreator.stageCount) {
+        if (stage == levelCreator.stageCount - 1) {
             return Result.COMPLETE
         }
 
