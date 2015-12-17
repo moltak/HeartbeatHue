@@ -3,6 +3,28 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_main_background"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Color Master Game"
+            android:textSize="20dp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"
+            android:layout_margin="8dp"
+            android:background="#AAFFFFFF"
+            android:padding="4dp"/>
+    </RelativeLayout>
+
     <Button
         android:id="@+id/buttonStage"
         android:layout_width="match_parent"

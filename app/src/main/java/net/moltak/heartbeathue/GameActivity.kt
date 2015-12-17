@@ -125,10 +125,14 @@ public class GameActivity : AppCompatActivity() {
 
     private fun showColorBlindnessTestResult() {
         when (gameReferee!!.colorBlindnessResult) {
-            ColorBlindnessReferee.ColorBlindType.PROTANOPIA -> return// 제1색맹 : 적색맹
-            ColorBlindnessReferee.ColorBlindType.DEUTERANOPIA -> return // 제2색맹 : 녹색맹
-            ColorBlindnessReferee.ColorBlindType.ACHROMAOPSIA -> return // 전색맹
-            ColorBlindnessReferee.ColorBlindType.NORMAL -> return // 정
+            ColorBlindnessReferee.ColorBlindType.NORMAL -> { // 정상
+                return
+            }
+            ColorBlindnessReferee.ColorBlindType.PROTANOPIA, // 제1색맹 : 적색맹
+            ColorBlindnessReferee.ColorBlindType.DEUTERANOPIA, // 제2색맹 : 녹색맹
+            ColorBlindnessReferee.ColorBlindType.ACHROMAOPSIA -> { // 전색맹
+
+            }
         }
     }
 }
