@@ -37,7 +37,6 @@
         android:layout_marginTop="16dp"
         app:border="true"
         app:border_width="6dp"
-        app:progress="80"
         app:wave_amplitude="0.06"
         app:wave_color="#3f51b5" />
 
