@@ -1,5 +1,6 @@
 package net.moltak.heartbeathue
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -75,8 +76,14 @@ public class GameActivity : AppCompatActivity() {
 
         when (gameReferee?.refereeing(selected, stage - 1)!!) {
             GameReferee.Result.NEXT -> nextStage()
-            GameReferee.Result.COMPLETE -> showResult()
-            GameReferee.Result.GAME_OVER -> finish()
+            GameReferee.Result.COMPLETE -> {
+                showResult()
+            }
+
+            GameReferee.Result.GAME_OVER -> {
+                showGameOver()
+                finish()
+            }
         }
     }
 
@@ -101,10 +108,19 @@ public class GameActivity : AppCompatActivity() {
         else stage++
     }
 
+    private fun showGameOver() {
+        startActivity(Intent(this, GameOverActivity::class.java))
+    }
+
     private fun showResult() {
         if (levelCreator!!.specialColorCreator is PartialColorBlindnessCreator) {
             showColorBlindnessTestResult()
+        } else {
+            showGameModeResult()
         }
+    }
+
+    private fun showGameModeResult() {
     }
 
     private fun showColorBlindnessTestResult() {
