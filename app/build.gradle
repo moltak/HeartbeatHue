@@ -58,6 +58,7 @@ dependencies {
     kapt 'com.jakewharton:butterknife-compiler:8.0.0-SNAPSHOT'
 
     compile 'com.mikhaellopez:circularfillableloaders:1.0.0'
+    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
 
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:1.9.5"

@@ -1,13 +1,14 @@
 package net.moltak.heartbeathue
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import butterknife.ButterKnife
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
 import net.moltak.heartbeathue.library.bindView
 import net.moltak.heartbeathue.logic.Bulb
 import net.moltak.heartbeathue.logic.HueController
@@ -29,6 +30,8 @@ public class GameActivity : AppCompatActivity() {
     private val button1: Button by bindView(R.id.button1)
     private val button2: Button by bindView(R.id.button2)
     private val button3: Button by bindView(R.id.button3)
+    private val textViewCountDown: TextView by bindView(R.id.textViewCountDown)
+    private val timeAttackProgress: RoundCornerProgressBar by bindView(R.id.timeAttackProgress)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,15 +53,30 @@ public class GameActivity : AppCompatActivity() {
     private fun createLevelCreator() : SpecialColorCreator {
         when(intent.getIntExtra("mode", 0)) {
             0 -> {
+                supportActionBar.title = "Stage Mode"
                 return StageModeColorCreator(stageCount = 10)
             }
             1 -> {
+                initTimeAttackLayout()
                 return TimeAttackModeColorCreator(stageCount = 10)
             }
             else -> {
+                supportActionBar.title = "Color Blindness Mode"
                 return PartialColorBlindnessCreator()
             }
         }
+    }
+
+    private fun initTimeAttackLayout() {
+        findViewById(R.id.layoutProgress).visibility = View.VISIBLE
+        timeAttackProgress.progressColor = Color.parseColor("#f44336")
+        timeAttackProgress.setBackgroundColor(Color.parseColor("#808080"))
+        timeAttackProgress.max = 60.0f
+        timeAttackProgress.progress = 58.2f
+        timeAttackProgress.padding = 0
+        timeAttackProgress.radius = 0
+        textViewCountDown.text = "${timeAttackProgress.progress}/60"
+        supportActionBar.hide()
     }
 
     private fun changeButtonColor(bulb: Bulb) {
