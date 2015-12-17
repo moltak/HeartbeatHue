@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,27 +28,59 @@
             android:padding="4dp"/>
     </RelativeLayout>
 
+    <com.mikhaellopez.circularfillableloaders.CircularFillableLoaders
+        android:id="@+id/circularFillableLoaders"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/philips_hue_color_light"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        app:border="true"
+        app:border_width="6dp"
+        app:progress="80"
+        app:wave_amplitude="0.06"
+        app:wave_color="#3f51b5" />
+
     <Button
         android:id="@+id/buttonStage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="#567dc7"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:textSize="20dp"
+        android:textColor="@android:color/white"
         android:text="Stage" />
 
     <Button
         android:id="@+id/buttonTimeAttack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#e4ad57"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="20dp"
+        android:textColor="@android:color/white"
         android:text="Time attack" />
 
     <Button
         android:id="@+id/buttonColorBlindness"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#845f85"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:textSize="20dp"
+        android:textColor="@android:color/white"
         android:text="Color blindness" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
