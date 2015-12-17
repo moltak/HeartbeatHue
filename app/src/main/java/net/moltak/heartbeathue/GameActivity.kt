@@ -19,6 +19,12 @@ import net.moltak.heartbeathue.logic.color.StageModeColorCreator
 import net.moltak.heartbeathue.logic.color.TimeAttackModeColorCreator
 import net.moltak.heartbeathue.logic.game.ColorBlindnessReferee
 import net.moltak.heartbeathue.logic.game.GameReferee
+import rx.Observable
+import rx.Observer
+import rx.android.schedulers.AndroidSchedulers
+import rx.lang.kotlin.observable
+import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 public class GameActivity : AppCompatActivity() {
 
@@ -67,6 +73,8 @@ public class GameActivity : AppCompatActivity() {
         }
     }
 
+    private var debounce: Observable<Int>? = null
+
     private fun initTimeAttackLayout() {
         findViewById(R.id.layoutProgress).visibility = View.VISIBLE
         timeAttackProgress.progressColor = Color.parseColor("#f44336")
@@ -77,6 +85,18 @@ public class GameActivity : AppCompatActivity() {
         timeAttackProgress.radius = 0
         textViewCountDown.text = "${timeAttackProgress.progress}/${timeAttackProgress.max}"
         supportActionBar.hide()
+
+        Thread(Runnable {
+            while (true) {
+                Thread.sleep(100)
+                runOnUiThread({
+                    timeAttackProgress.progress -= 0.1f
+                    textViewCountDown.text = "%.1f/${timeAttackProgress.max}".format(timeAttackProgress.progress)
+                })
+
+                if (timeAttackProgress.progress == 0f) break
+            }
+        }).start()
     }
 
     private fun changeButtonColor(bulb: Bulb) {
