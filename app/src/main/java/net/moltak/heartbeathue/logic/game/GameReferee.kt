@@ -1,5 +1,6 @@
 package net.moltak.heartbeathue.logic.game
 
+import android.util.Log
 import net.moltak.heartbeathue.logic.LevelCreator
 import net.moltak.heartbeathue.logic.color.PartialColorBlindnessCreator
 
@@ -24,7 +25,7 @@ class GameReferee(levelCreator: LevelCreator) {
     }
 
     private fun partialColorBlindnessTestReferee(selectedIndex: Int, stage: Int): Result {
-        if (stage == levelCreator.stageCount) {
+        if (stage == levelCreator.stageCount - 1) {
             colorBlindnessResult = blindnessReferee.testResult
             return Result.COMPLETE
         }

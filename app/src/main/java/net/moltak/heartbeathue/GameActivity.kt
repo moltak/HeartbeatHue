@@ -45,7 +45,7 @@ public class GameActivity : AppCompatActivity() {
         button2.setOnClickListener(buttonSelect)
         button3.setOnClickListener(buttonSelect)
 
-        nextStage()
+        changeButtonColor(levelCreator!!.stages[stage])
     }
 
     private fun createLevelCreator() : SpecialColorCreator {
@@ -74,7 +74,7 @@ public class GameActivity : AppCompatActivity() {
     val buttonSelect = View.OnClickListener { v ->
         var selected = selectedIndex(v)
 
-        when (gameReferee?.refereeing(selected, stage - 1)!!) {
+        when (gameReferee?.refereeing(selected, stage)!!) {
             GameReferee.Result.NEXT -> nextStage()
             GameReferee.Result.COMPLETE -> {
                 showResult()
@@ -96,16 +96,11 @@ public class GameActivity : AppCompatActivity() {
     }
 
     private fun nextStage() {
-        if (hueController?.changeTheColor(levelCreator!!.stages[stage]) ?: false) {
-            textView.text = "Stage: -> ${stage + 1}, color changed!"
-        } else {
-            textView.text = "Stage: -> ${stage + 1}, color fail!"
-        }
-
-        changeButtonColor(levelCreator!!.stages[stage])
-
         if (stage == levelCreator!!.stageCount - 1) stage = 0
         else stage++
+
+        hueController?.changeTheColor(levelCreator!!.stages[stage])
+        changeButtonColor(levelCreator!!.stages[stage])
     }
 
     private fun showGameOver() {
