@@ -76,14 +76,8 @@ public class GameActivity : AppCompatActivity() {
 
         when (gameReferee?.refereeing(selected, stage)!!) {
             GameReferee.Result.NEXT -> nextStage()
-            GameReferee.Result.COMPLETE -> {
-                showResult()
-            }
-
-            GameReferee.Result.GAME_OVER -> {
-                showGameOver()
-                finish()
-            }
+            GameReferee.Result.COMPLETE -> showResult()
+            GameReferee.Result.GAME_OVER -> showGameOver()
         }
     }
 
@@ -105,6 +99,7 @@ public class GameActivity : AppCompatActivity() {
 
     private fun showGameOver() {
         startActivity(Intent(this, GameOverActivity::class.java))
+        finish()
     }
 
     private fun showResult() {
@@ -124,7 +119,6 @@ public class GameActivity : AppCompatActivity() {
         when (gameReferee!!.colorBlindnessResult) {
             ColorBlindnessReferee.ColorBlindType.NORMAL -> { // 정상
                 i.putExtra("result", "normal")
-                return
             }
             ColorBlindnessReferee.ColorBlindType.PROTANOPIA, // 제1색맹 : 적색맹
             ColorBlindnessReferee.ColorBlindType.DEUTERANOPIA, // 제2색맹 : 녹색맹
