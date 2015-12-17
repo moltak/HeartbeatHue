@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -22,6 +23,7 @@ import net.moltak.heartbeathue.logic.game.GameReferee
 import rx.Observable
 import rx.Observer
 import rx.android.schedulers.AndroidSchedulers
+import rx.lang.kotlin.emptyObservable
 import rx.lang.kotlin.observable
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -32,6 +34,7 @@ public class GameActivity : AppCompatActivity() {
     private var stage = 0
     var levelCreator: LevelCreator? = null
     var gameReferee: GameReferee? = null
+    var isDestory: Boolean = true
 
     private val button1: Button by bindView(R.id.button1)
     private val button2: Button by bindView(R.id.button2)
@@ -56,6 +59,11 @@ public class GameActivity : AppCompatActivity() {
         changeButtonColor(levelCreator!!.stages[stage])
     }
 
+    override fun onDestroy() {
+        isDestory = false
+        super.onDestroy()
+    }
+
     private fun createLevelCreator() : SpecialColorCreator {
         when(intent.getIntExtra("mode", 0)) {
             0 -> {
@@ -73,28 +81,33 @@ public class GameActivity : AppCompatActivity() {
         }
     }
 
-    private var debounce: Observable<Int>? = null
-
     private fun initTimeAttackLayout() {
         findViewById(R.id.layoutProgress).visibility = View.VISIBLE
         timeAttackProgress.progressColor = Color.parseColor("#f44336")
         timeAttackProgress.setBackgroundColor(Color.parseColor("#808080"))
         timeAttackProgress.max = 60.0f
-        timeAttackProgress.progress = 60.2f
+        timeAttackProgress.progress = timeAttackProgress.max
         timeAttackProgress.padding = 0
         timeAttackProgress.radius = 0
         textViewCountDown.text = "${timeAttackProgress.progress}/${timeAttackProgress.max}"
         supportActionBar.hide()
 
+        startCountDown()
+    }
+
+    private fun startCountDown() {
         Thread(Runnable {
-            while (true) {
+            while (isDestory) {
                 Thread.sleep(100)
                 runOnUiThread({
                     timeAttackProgress.progress -= 0.1f
                     textViewCountDown.text = "%.1f/${timeAttackProgress.max}".format(timeAttackProgress.progress)
                 })
 
-                if (timeAttackProgress.progress == 0f) break
+                if (timeAttackProgress.progress == 0f) {
+                    showGameOver()
+                    break
+                }
             }
         }).start()
     }
