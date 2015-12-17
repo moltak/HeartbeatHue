@@ -52,11 +52,11 @@ public class GameActivity : AppCompatActivity() {
         when(intent.getIntExtra("mode", 0)) {
             0 -> {
                 textView.text = "Stage mode"
-                return StageModeColorCreator()
+                return StageModeColorCreator(stageCount = 10)
             }
             1 -> {
                 textView.text = "Time Attack mode"
-                return TimeAttackModeColorCreator()
+                return TimeAttackModeColorCreator(stageCount = 10)
             }
             else -> {
                 textView.text = "Color Blindness mode"

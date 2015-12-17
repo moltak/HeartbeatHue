@@ -95,7 +95,7 @@ class StageModeColorCreator(bulbCount: Int = 3, stageCount: Int = 20, modelNumbe
             rgb = shuffle3(rgb)
         } else if (stage / stageCount >= 0.6f) { // 2개 섞기
             rgb = shuffle2(rgb)
-        } else if (stage / stageCount >= 0.8f){ // 1개 값 변경
+        } else {
             rgb = shuffle1(rgb)
         }
 
