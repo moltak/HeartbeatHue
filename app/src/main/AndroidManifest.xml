@@ -22,6 +22,8 @@
         <activity android:name=".GameActivity" android:screenOrientation="portrait"/>
         <activity android:name=".PHHomeActivity" android:screenOrientation="portrait"/>
         <activity android:name=".PHPushlinkActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".GameOverActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ColorBlindnessResultActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
