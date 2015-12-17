@@ -111,6 +111,8 @@ public class GameActivity : AppCompatActivity() {
     }
 
     private fun showGameModeResult() {
+        startActivity(Intent(this, GameClearActivity::class.java))
+        finish()
     }
 
     private fun showColorBlindnessTestResult() {
