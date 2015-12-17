@@ -18,6 +18,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
     val sharedPreferences: HueSharedPreferences
     val listener: PHSDKListener
     val colorConverter = ColorConverter()
+    var isConnect = false
 
     var levelCreator: LevelCreator? = null
 
@@ -116,6 +117,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
             sharedPreferences.setUsername(userName)
 
             listener.onBridgeConnected(phBridge, userName)
+            isConnect = true
         }
 
         override fun onAuthenticationRequired(phAccessPoint: PHAccessPoint) {

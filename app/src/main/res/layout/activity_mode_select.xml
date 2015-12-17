@@ -1,29 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/buttonStage"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stage" />
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_main_background"
+            android:scaleType="centerCrop" />
 
-    <Button
-        android:id="@+id/buttonTimeAttack"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Time attack" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Color Master Game"
+            android:textSize="20dp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"
+            android:layout_margin="8dp"
+            android:background="#AAFFFFFF"
+            android:padding="4dp"/>
+    </RelativeLayout>
 
-    <Button
-        android:id="@+id/buttonColorBlindness"
+    <com.mikhaellopez.circularfillableloaders.CircularFillableLoaders
+        android:id="@+id/circularFillableLoaders"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/philips_hue_color_light"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        app:border="true"
+        app:border_width="6dp"
+        app:wave_amplitude="0.06"
+        app:wave_color="#3f51b5" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Color blindness" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:paddingBottom="8dp">
+        <Button
+            android:id="@+id/buttonStage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textSize="20dp"
+            android:background="#567dc7"
+            android:textColor="@android:color/white"
+            android:text="Stage" />
+
+        <Button
+            android:id="@+id/buttonTimeAttack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#e4ad57"
+            android:textSize="20dp"
+            android:textColor="@android:color/white"
+            android:text="Time attack" />
+
+        <Button
+            android:id="@+id/buttonColorBlindness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#845f85"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:text="Color blindness" />
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"

@@ -24,12 +24,13 @@ class GameReferee(levelCreator: LevelCreator) {
     }
 
     private fun partialColorBlindnessTestReferee(selectedIndex: Int, stage: Int): Result {
-        if (stage == levelCreator.stageCount) {
+        blindnessReferee.choice(selectedIndex)
+
+        if (stage == levelCreator.stageCount - 1) {
             colorBlindnessResult = blindnessReferee.testResult
             return Result.COMPLETE
         }
 
-        blindnessReferee.choice(selectedIndex)
         return Result.NEXT
     }
 
@@ -44,7 +45,7 @@ class GameReferee(levelCreator: LevelCreator) {
             }
         }
 
-        if (stage == levelCreator.stageCount) {
+        if (stage == levelCreator.stageCount - 1) {
             return Result.COMPLETE
         }
 

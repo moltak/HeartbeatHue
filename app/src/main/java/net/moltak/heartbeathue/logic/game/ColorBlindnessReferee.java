@@ -1,5 +1,7 @@
 package net.moltak.heartbeathue.logic.game;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.List;
  * Created by moltak on 12/17/15.
  */
 public class ColorBlindnessReferee {
-    private final List<Integer> CORRECT_LIST = Arrays.asList(2, 1, 3, 1, 1, 3, 2, 1, 2);
+    private final List<Integer> CORRECT_LIST = Arrays.asList(1, 0, 2, 0, 0, 2, 1, 0, 1);
     private List<Integer> choiceList = new ArrayList<>();
 
     public void choice(int choice) {
@@ -16,6 +18,10 @@ public class ColorBlindnessReferee {
     }
 
     public ColorBlindType getTestResult() {
+        for (int i : choiceList) {
+            Log.d("stage", String.valueOf(i));
+        }
+
         // 전색맹 구분
         int score = 0;
         for (int i = 0; i < 4; i++) {

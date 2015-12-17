@@ -2,7 +2,7 @@ package net.moltak.heartbeathue
 
 import net.moltak.heartbeathue.logic.BulbColor
 import net.moltak.heartbeathue.logic.LevelCreator
-import net.moltak.heartbeathue.logic.color.CieOppositeXyColorCreator
+import net.moltak.heartbeathue.logic.color.InverseExponencialColorCreator
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -14,19 +14,19 @@ class StageModeColorCreatorTest {
 
     @Test
     fun createorShouldReturnHueStages() {
-        val colorCreator = CieOppositeXyColorCreator(3, 20, "modelNumber")
+        val colorCreator = InverseExponencialColorCreator(3, 20)
         assertTrue(colorCreator.create(1) is Array<BulbColor>)
     }
 
     @Test
     fun creatorShouldReturnSameHueCountWithLevelCreator() {
-        val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator(3, 20, "modelNumber"))
-        assertEquals(levelCreator.bulbCount, (levelCreator.specialColorCreator as CieOppositeXyColorCreator).bulbCount)
+        val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator(3, 20))
+        assertEquals(levelCreator.bulbCount, (levelCreator.specialColorCreator as InverseExponencialColorCreator).bulbCount)
     }
 
     @Test
     fun shouldHasMinValue() {
-        val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator(3, 20, "modelNumber"))
+        val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator(3, 20))
 
         for (i in 1..levelCreator.stageCount) {
             val MINVALUE : Int = ((255 / i) - (255 / levelCreator.stageCount))
@@ -41,6 +41,6 @@ class StageModeColorCreatorTest {
 
     @Test
     fun shouldHasOppositeValue() {
-        val levelCreator = LevelCreator(colorCreator = CieOppositeXyColorCreator())
+        val levelCreator = LevelCreator(colorCreator = InverseExponencialColorCreator())
     }
 }

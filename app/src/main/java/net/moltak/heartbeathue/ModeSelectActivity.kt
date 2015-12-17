@@ -2,10 +2,12 @@ package net.moltak.heartbeathue
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders
 import com.philips.lighting.hue.sdk.PHAccessPoint
 import com.philips.lighting.hue.sdk.PHMessageType
 import com.philips.lighting.model.PHBridge
@@ -21,6 +23,7 @@ import net.moltak.heartbeathue.logic.HueSimpleListener
 class ModeSelectActivity : AppCompatActivity() {
 
     private val textView: TextView by bindView(R.id.textView)
+    private val circularFillableLoaders: CircularFillableLoaders by bindView(R.id.circularFillableLoaders)
     private var hueController: HueController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +35,16 @@ class ModeSelectActivity : AppCompatActivity() {
         (application as HueApplication).hueController = hueController
         if (hueController?.connectToLastAccessPoint() == false) {
             startActivity(Intent(this, PHHomeActivity::class.java))
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (hueController!!.isConnect) {
+            circularFillableLoaders.setProgress(100)
+            circularFillableLoaders.setAmplitudeRatio(0f)
+        } else {
+            circularFillableLoaders.setProgress(50)
         }
     }
 

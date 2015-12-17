@@ -1,12 +1,15 @@
 package net.moltak.heartbeathue
 
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import butterknife.ButterKnife
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
 import net.moltak.heartbeathue.library.bindView
 import net.moltak.heartbeathue.logic.Bulb
 import net.moltak.heartbeathue.logic.HueController
@@ -17,6 +20,13 @@ import net.moltak.heartbeathue.logic.color.StageModeColorCreator
 import net.moltak.heartbeathue.logic.color.TimeAttackModeColorCreator
 import net.moltak.heartbeathue.logic.game.ColorBlindnessReferee
 import net.moltak.heartbeathue.logic.game.GameReferee
+import rx.Observable
+import rx.Observer
+import rx.android.schedulers.AndroidSchedulers
+import rx.lang.kotlin.emptyObservable
+import rx.lang.kotlin.observable
+import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 public class GameActivity : AppCompatActivity() {
 
@@ -24,11 +34,13 @@ public class GameActivity : AppCompatActivity() {
     private var stage = 0
     var levelCreator: LevelCreator? = null
     var gameReferee: GameReferee? = null
+    var isDestory: Boolean = true
 
-    private val textView: TextView by bindView(R.id.textView)
     private val button1: Button by bindView(R.id.button1)
     private val button2: Button by bindView(R.id.button2)
     private val button3: Button by bindView(R.id.button3)
+    private val textViewCountDown: TextView by bindView(R.id.textViewCountDown)
+    private val timeAttackProgress: RoundCornerProgressBar by bindView(R.id.timeAttackProgress)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,24 +56,60 @@ public class GameActivity : AppCompatActivity() {
         button2.setOnClickListener(buttonSelect)
         button3.setOnClickListener(buttonSelect)
 
-        nextStage()
+        changeButtonColor(levelCreator!!.stages[stage])
+    }
+
+    override fun onDestroy() {
+        isDestory = false
+        super.onDestroy()
     }
 
     private fun createLevelCreator() : SpecialColorCreator {
         when(intent.getIntExtra("mode", 0)) {
             0 -> {
-                textView.text = "Stage mode"
-                return StageModeColorCreator()
+                supportActionBar.title = "Stage Mode"
+                return StageModeColorCreator(stageCount = 10)
             }
             1 -> {
-                textView.text = "Time Attack mode"
-                return TimeAttackModeColorCreator()
+                initTimeAttackLayout()
+                return TimeAttackModeColorCreator(stageCount = 10)
             }
             else -> {
-                textView.text = "Color Blindness mode"
+                supportActionBar.title = "Color Blindness Mode"
                 return PartialColorBlindnessCreator()
             }
         }
+    }
+
+    private fun initTimeAttackLayout() {
+        findViewById(R.id.layoutProgress).visibility = View.VISIBLE
+        timeAttackProgress.progressColor = Color.parseColor("#f44336")
+        timeAttackProgress.setBackgroundColor(Color.parseColor("#808080"))
+        timeAttackProgress.max = 60.0f
+        timeAttackProgress.progress = timeAttackProgress.max
+        timeAttackProgress.padding = 0
+        timeAttackProgress.radius = 0
+        textViewCountDown.text = "${timeAttackProgress.progress}/${timeAttackProgress.max}"
+        supportActionBar.hide()
+
+        startCountDown()
+    }
+
+    private fun startCountDown() {
+        Thread(Runnable {
+            while (isDestory) {
+                Thread.sleep(100)
+                runOnUiThread({
+                    timeAttackProgress.progress -= 0.1f
+                    textViewCountDown.text = "%.1f/${timeAttackProgress.max}".format(timeAttackProgress.progress)
+                })
+
+                if (timeAttackProgress.progress == 0f) {
+                    showGameOver()
+                    break
+                }
+            }
+        }).start()
     }
 
     private fun changeButtonColor(bulb: Bulb) {
@@ -73,10 +121,10 @@ public class GameActivity : AppCompatActivity() {
     val buttonSelect = View.OnClickListener { v ->
         var selected = selectedIndex(v)
 
-        when (gameReferee?.refereeing(selected, stage - 1)!!) {
+        when (gameReferee?.refereeing(selected, stage)!!) {
             GameReferee.Result.NEXT -> nextStage()
             GameReferee.Result.COMPLETE -> showResult()
-            GameReferee.Result.GAME_OVER -> finish()
+            GameReferee.Result.GAME_OVER -> showGameOver()
         }
     }
 
@@ -89,30 +137,49 @@ public class GameActivity : AppCompatActivity() {
     }
 
     private fun nextStage() {
-        if (hueController?.changeTheColor(levelCreator!!.stages[stage]) ?: false) {
-            textView.text = "Stage: -> ${stage + 1}, color changed!"
-        } else {
-            textView.text = "Stage: -> ${stage + 1}, color fail!"
-        }
-
-        changeButtonColor(levelCreator!!.stages[stage])
-
         if (stage == levelCreator!!.stageCount - 1) stage = 0
         else stage++
+
+        hueController?.changeTheColor(levelCreator!!.stages[stage])
+        changeButtonColor(levelCreator!!.stages[stage])
+        if (levelCreator!!.specialColorCreator is StageModeColorCreator) {
+            supportActionBar.title = "Stage: $stage"
+        }
+    }
+
+    private fun showGameOver() {
+        startActivity(Intent(this, GameOverActivity::class.java))
+        finish()
     }
 
     private fun showResult() {
         if (levelCreator!!.specialColorCreator is PartialColorBlindnessCreator) {
             showColorBlindnessTestResult()
+        } else {
+            showGameModeResult()
         }
     }
 
+    private fun showGameModeResult() {
+        startActivity(Intent(this, GameClearActivity::class.java))
+        finish()
+    }
+
     private fun showColorBlindnessTestResult() {
+        val i = Intent(this, ColorBlindnessResultActivity::class.java)
+
         when (gameReferee!!.colorBlindnessResult) {
-            ColorBlindnessReferee.ColorBlindType.PROTANOPIA -> return// 제1색맹 : 적색맹
-            ColorBlindnessReferee.ColorBlindType.DEUTERANOPIA -> return // 제2색맹 : 녹색맹
-            ColorBlindnessReferee.ColorBlindType.ACHROMAOPSIA -> return // 전색맹
-            ColorBlindnessReferee.ColorBlindType.NORMAL -> return // 정
+            ColorBlindnessReferee.ColorBlindType.NORMAL -> { // 정상
+                i.putExtra("result", "normal")
+            }
+            ColorBlindnessReferee.ColorBlindType.PROTANOPIA, // 제1색맹 : 적색맹
+            ColorBlindnessReferee.ColorBlindType.DEUTERANOPIA, // 제2색맹 : 녹색맹
+            ColorBlindnessReferee.ColorBlindType.ACHROMAOPSIA -> { // 전색맹
+                i.putExtra("result", "color_blindness")
+            }
         }
+
+        startActivity(i)
+        finish()
     }
 }
