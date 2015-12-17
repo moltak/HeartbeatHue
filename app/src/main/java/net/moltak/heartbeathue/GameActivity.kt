@@ -124,15 +124,21 @@ public class GameActivity : AppCompatActivity() {
     }
 
     private fun showColorBlindnessTestResult() {
+        val i = Intent(this, ColorBlindnessResultActivity::class.java)
+
         when (gameReferee!!.colorBlindnessResult) {
             ColorBlindnessReferee.ColorBlindType.NORMAL -> { // 정상
+                i.putExtra("result", "normal")
                 return
             }
             ColorBlindnessReferee.ColorBlindType.PROTANOPIA, // 제1색맹 : 적색맹
             ColorBlindnessReferee.ColorBlindType.DEUTERANOPIA, // 제2색맹 : 녹색맹
             ColorBlindnessReferee.ColorBlindType.ACHROMAOPSIA -> { // 전색맹
-
+                i.putExtra("result", "color_blindness")
             }
         }
+
+        startActivity(i)
+        finish()
     }
 }
