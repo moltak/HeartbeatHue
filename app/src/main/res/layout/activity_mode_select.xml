@@ -45,10 +45,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="#567dc7"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:textSize="20dp"
+        android:background="#567dc7"
         android:textColor="@android:color/white"
         android:text="Stage" />
 
@@ -56,10 +56,10 @@
         android:id="@+id/buttonTimeAttack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#e4ad57"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="#e4ad57"
         android:textSize="20dp"
         android:textColor="@android:color/white"
         android:text="Time attack" />
@@ -68,12 +68,12 @@
         android:id="@+id/buttonColorBlindness"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#845f85"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:textSize="20dp"
+        android:background="#845f85"
         android:textColor="@android:color/white"
+        android:textSize="20dp"
         android:text="Color blindness" />
 
     <RelativeLayout
