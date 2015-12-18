@@ -48,8 +48,10 @@ class ModeSelectActivity : AppCompatActivity() {
         if (hueController!!.isConnect) {
             circularFillableLoaders.setProgress(95)
             circularFillableLoaders.setAmplitudeRatio(0.06f)
+            circularFillableLoaders.setImageResource(R.drawable.philips_hue_color_light_on)
         } else {
             circularFillableLoaders.setProgress(50)
+            circularFillableLoaders.setImageResource(R.drawable.philips_hue_color_light)
         }
     }
 
