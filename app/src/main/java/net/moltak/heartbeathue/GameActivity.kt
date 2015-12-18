@@ -57,6 +57,7 @@ public class GameActivity : AppCompatActivity() {
         button3.setOnClickListener(buttonSelect)
 
         changeButtonColor(levelCreator!!.stages[stage])
+        hueController?.changeTheColor(levelCreator!!.stages[stage])
     }
 
     override fun onDestroy() {
@@ -113,9 +114,9 @@ public class GameActivity : AppCompatActivity() {
     }
 
     private fun changeButtonColor(bulb: Bulb) {
-        button1.setBackgroundColor(bulb.bulbs[0].toInt() ?: android.R.color.black)
-        button2.setBackgroundColor(bulb.bulbs[1].toInt() ?: android.R.color.black)
-        button3.setBackgroundColor(bulb.bulbs[2].toInt() ?: android.R.color.black)
+//        button1.setBackgroundColor(bulb.bulbs[0].toInt() ?: android.R.color.black)
+//        button2.setBackgroundColor(bulb.bulbs[1].toInt() ?: android.R.color.black)
+//        button3.setBackgroundColor(bulb.bulbs[2].toInt() ?: android.R.color.black)
     }
 
     val buttonSelect = View.OnClickListener { v ->
