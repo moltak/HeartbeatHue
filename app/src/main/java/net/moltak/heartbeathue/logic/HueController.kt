@@ -70,7 +70,7 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
             lightState.isOn = true
             lightState.brightness = (Color.brightness(bulb.bulbs[i].toInt()!!) * 255).toInt()
             if (lightState.brightness >= 255) lightState.brightness = 254
-            bridge.updateLightState(bridge.resourceCache.allLights[i], lightState, simpleLightListener)
+            bridge.updateLightState(resource[i], lightState, simpleLightListener)
 
             Log.d(TAG, "   $i RGB -> ${bulb.bulbs[i].toInt()}, x = ${lightState.x}, y = ${lightState.y}, " +
                     "${lightState.validateState()}, brightness = ${lightState.brightness}")
@@ -85,6 +85,20 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
         lightState.x = xy[0]
         lightState.y = xy[1]
         return lightState
+    }
+
+    fun turnOff() : Boolean {
+        val bridge = phHueSDK.selectedBridge
+        val resource = bridge?.resourceCache?.allLights ?: return false
+
+        for (i in 0..levelCreator!!.bulbCount - 1) {
+            val lightState = PHLightState()
+            lightState.isOn = false
+            lightState.brightness = 0
+            bridge.updateLightState(resource[i], lightState, simpleLightListener)
+        }
+
+        return true
     }
 
     private fun connectToAccessPoints(accessPoint: PHAccessPoint) {

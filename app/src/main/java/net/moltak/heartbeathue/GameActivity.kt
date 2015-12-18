@@ -114,9 +114,9 @@ public class GameActivity : AppCompatActivity() {
     }
 
     private fun changeButtonColor(bulb: Bulb) {
-//        button1.setBackgroundColor(bulb.bulbs[0].toInt() ?: android.R.color.black)
-//        button2.setBackgroundColor(bulb.bulbs[1].toInt() ?: android.R.color.black)
-//        button3.setBackgroundColor(bulb.bulbs[2].toInt() ?: android.R.color.black)
+        button1.setBackgroundColor(bulb.bulbs[0].toInt() ?: android.R.color.black)
+        button2.setBackgroundColor(bulb.bulbs[1].toInt() ?: android.R.color.black)
+        button3.setBackgroundColor(bulb.bulbs[2].toInt() ?: android.R.color.black)
     }
 
     val buttonSelect = View.OnClickListener { v ->
@@ -124,8 +124,14 @@ public class GameActivity : AppCompatActivity() {
 
         when (gameReferee?.refereeing(selected, stage)!!) {
             GameReferee.Result.NEXT -> nextStage()
-            GameReferee.Result.COMPLETE -> showResult()
-            GameReferee.Result.GAME_OVER -> showGameOver()
+            GameReferee.Result.COMPLETE -> {
+                hueController?.turnOff()
+                showResult()
+            }
+            GameReferee.Result.GAME_OVER -> {
+                hueController?.turnOff()
+                showGameOver()
+            }
         }
     }
 
@@ -157,11 +163,11 @@ public class GameActivity : AppCompatActivity() {
         if (levelCreator!!.specialColorCreator is PartialColorBlindnessCreator) {
             showColorBlindnessTestResult()
         } else {
-            showGameModeResult()
+            showClearActivity()
         }
     }
 
-    private fun showGameModeResult() {
+    private fun showClearActivity() {
         startActivity(Intent(this, GameClearActivity::class.java))
         finish()
     }
