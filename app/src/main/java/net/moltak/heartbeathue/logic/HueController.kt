@@ -46,11 +46,13 @@ class HueController(sharedPreferences: HueSharedPreferences, phdSdkPHSDKListener
 
             if (!phHueSDK.isAccessPointConnected(lastAccessPoint)) {
                 phHueSDK.connect(lastAccessPoint)
-                return true
+                isConnect = true
+                return isConnect
             }
         }
 
-        return false
+        isConnect = false
+        return isConnect
     }
 
     fun disconnect() {

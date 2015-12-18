@@ -1,6 +1,7 @@
 package net.moltak.heartbeathue
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
@@ -40,9 +41,13 @@ class ModeSelectActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        changeConnectedUi()
+    }
+
+    private fun changeConnectedUi() {
         if (hueController!!.isConnect) {
-            circularFillableLoaders.setProgress(100)
-            circularFillableLoaders.setAmplitudeRatio(0f)
+            circularFillableLoaders.setProgress(95)
+            circularFillableLoaders.setAmplitudeRatio(0.06f)
         } else {
             circularFillableLoaders.setProgress(50)
         }
